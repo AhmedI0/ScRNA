@@ -1,0 +1,43 @@
+# ---- data (downloaded / generated; reproducible from scripts) ----
+data/raw/
+data/interim/
+data/processed/
+data/linux_results/
+data/external/*
+!data/external/README.md
+*.h5ad
+*.h5
+*.loom
+*.mtx
+*.mtx.gz
+*.rds
+
+# ---- personal teaching material (not part of the repository) ----
+_teaching/
+
+# ---- caches, logs, environments ----
+.cache/
+logs/
+_staging/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.pytest_cache/
+.ruff_cache/
+.Rhistory
+.RData
+.Rproj.user/
+lightning_logs/
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# ---- Linux package working outputs (results come back via data/linux_results) ----
+linux_upstream/input/*.loom
+linux_upstream/input/*.sha256
+linux_upstream/*.log
