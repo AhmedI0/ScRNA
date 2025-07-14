@@ -1,0 +1,36 @@
+# Analysis environment (Windows / Linux / macOS).
+# Compiled scientific libraries come from conda-forge; the scverse stack and
+# PyTorch are installed by pip from envs/requirements*.txt (see envs/setup_windows.ps1
+# or envs/setup_linux.sh). An exact, frozen snapshot is kept in envs/lock/.
+name: scrna-ipf
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.11
+  - pip
+  - numpy>=1.26,<2.3
+  - scipy>=1.12
+  - pandas>=2.2,<3
+  - h5py
+  - pytables
+  - numba
+  - llvmlite
+  - python-igraph
+  - leidenalg
+  - scikit-learn
+  - statsmodels>=0.14
+  - matplotlib>=3.8
+  - seaborn
+  - pyyaml
+  - tqdm
+  - openpyxl
+  - pyarrow
+  - jupyterlab
+  - ipykernel
+  - ipywidgets
+  - papermill
+  - jupytext
+  - nbconvert
+  - pytest
+  - ruff
