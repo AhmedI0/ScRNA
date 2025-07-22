@@ -1,0 +1,22 @@
+# scverse + downstream analysis stack (installed with pip on top of environment.yml)
+# PyTorch is installed separately first (CUDA build), see setup scripts.
+anndata>=0.10
+scanpy[leiden]>=1.10
+scikit-misc>=0.3        # loess for flavor="seurat_v3" highly variable genes
+scvi-tools>=1.2
+scib-metrics>=0.5
+harmonypy>=0.0.10
+celltypist>=1.6
+decoupler>=1.6
+liana>=1.4
+omnipath>=1.0.8
+pydeseq2>=0.4
+gseapy>=1.1
+cellrank>=2.0
+scvelo>=0.3
+mudata>=0.3
+loompy>=3.0
+adjustText>=1.0
+upsetplot>=0.9
+matplotlib-venn>=1.0
+pertpy>=1.0      # scCODA (Bayesian compositional model) and Milo (neighbourhood DA)
