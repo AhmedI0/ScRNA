@@ -1,0 +1,111 @@
+# Central analysis configuration. Every notebook reads this file through
+# ipfatlas.config.load_config(); no thresholds are hard-coded in notebooks.
+
+project:
+  name: ipf-scrnaseq-atlas
+  seed: 0
+
+paths:
+  raw: data/raw
+  interim: data/interim
+  processed: data/processed
+  external: data/external
+  linux_results: data/linux_results     # outputs returned from linux_upstream/
+  figures: results/figures
+  tables: results/tables
+  r_scripts: workflow/R
+
+# R used for scDblFinder, edgeR/DESeq2 and speckle (propeller)
+r:
+  rscript_windows: K:/R_setup/R/R-4.5.1/bin/x64/Rscript.exe
+  rscript_linux: Rscript
+
+figures:
+  dpi: 300
+  formats: [svg, jpg, png]
+  font_family: Arial
+  font_size: 7           # journal figures: 5-8 pt at final size
+  single_column_mm: 89   # Nature single column
+  double_column_mm: 183  # Nature double column
+
+cohorts:
+  discovery: GSE135893
+  validation: GSE136831
+
+# Primary contrast. Non-IPF ILDs stay in the atlas (more cells for annotation)
+# but are excluded from the IPF-vs-control statistics.
+contrast:
+  condition_key: diagnosis
+  case: IPF
+  control: Control
+  donor_key: donor_id
+  sample_key: library_id
+
+qc:
+  # data-driven outlier detection per library (median +/- n * MAD)
+  nmads_counts: 4          # both tails of log1p(total counts)
+  nmads_genes: 4           # both tails of log1p(detected genes)
+  nmads_top20: 5           # upper tail only: low-complexity cells
+  nmads_mito: 3
+  mito_floor: 10          # MAD-based mito threshold is bounded to [mito_floor, max_pct_mito]
+  max_pct_mito: 25        # same ceiling as the original study
+  min_genes: 500           # hard floor: 300-500-gene barcodes had a median of ~640 UMIs
+  min_counts: 1000         #   and resembled ambient-rich droplets (Notebook 02, section 1)
+  min_cells_per_gene: 10
+  min_cells_per_library: 200
+
+doublets:
+  primary: scDblFinder    # R/Bioconductor, best-performing in benchmarks
+  secondary: scrublet     # reported for concordance
+  scrublet_expected_rate: 0.06
+
+features:
+  n_top_genes: 3000
+  hvg_flavor: seurat_v3
+  exclude_patterns: ["^MT-", "^RP[SL]\\d", "^HB[ABDEGMQZ]\\d?$"]
+  exclude_genes: [XIST, TSIX, RPS4Y1, DDX3Y, UTY, KDM5D, EIF1AY, ZFY, USP9Y, NLGN4Y, TXLNGY, PRKY, MALAT1, NEAT1]
+  n_pcs: 50
+
+integration:
+  batch_key: library_id
+  scvi:
+    n_latent: 30
+    n_layers: 2
+    n_hidden: 128
+    dropout_rate: 0.1
+    gene_likelihood: nb
+    max_epochs: 300
+    early_stopping: true
+    batch_size: 1024
+  harmony:
+    theta: 2.0
+  benchmark_subsample: 40000
+
+clustering:
+  n_neighbors: 15
+  resolutions: [0.25, 0.5, 1.0, 1.5, 2.0]
+  umap_min_dist: 0.3
+
+annotation:
+  celltypist_model: Human_Lung_Atlas.pkl
+
+composition:
+  min_cells_per_donor: 200
+  sccoda_fdr: 0.1
+  propeller_transform: logit
+
+de:
+  min_cells_per_pseudobulk: 10
+  min_donors_per_group: 3
+  fdr: 0.05
+  lfc: 0.585             # |log2 FC| > 0.585 (1.5-fold) for "strong" DEGs
+  covariates: [sex]
+
+trajectory:
+  lineage: [AT2, Transitional AT2, AT1, Aberrant basaloid, Basal]
+  root_cell_type: AT2
+
+communication:
+  resource: consensus
+  min_expr_prop: 0.1
+  n_perms: 1000
