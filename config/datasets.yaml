@@ -1,0 +1,43 @@
+# Public datasets used in this project.
+# Every file is downloaded by workflow/scripts/download_data.py, which records
+# size + SHA-256 in data/raw/download_manifest.tsv for provenance.
+
+discovery:
+  accession: GSE135893
+  role: discovery cohort
+  citation: >-
+    Habermann AC, Gutierrez AJ, Bui LT, et al. Single-cell RNA sequencing reveals
+    profibrotic roles of distinct epithelial and mesenchymal lineages in pulmonary
+    fibrosis. Sci Adv. 2020;6(28):eaba1972.
+  doi: 10.1126/sciadv.aba1972
+  bioproject: PRJNA560492
+  technology: 10x Genomics Chromium Single Cell 5' (v1), Cell Ranger 3.0.2, GRCh38
+  base_url: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE135nnn/GSE135893/suppl/
+  files:
+    - GSE135893_matrix.mtx.gz
+    - GSE135893_genes.tsv.gz
+    - GSE135893_barcodes.tsv.gz
+    - GSE135893_IPF_metadata.csv.gz
+    - GSE135893_readme_for_ILD_annotated_fullsize.rds.txt
+  extra:
+    - url: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE135nnn/GSE135893/soft/GSE135893_family.soft.gz
+      file: GSE135893_family.soft.gz
+
+validation:
+  accession: GSE136831
+  role: independent validation cohort
+  citation: >-
+    Adams TS, Schupp JC, Poli S, et al. Single-cell RNA-seq reveals ectopic and
+    aberrant lung-resident cell populations in idiopathic pulmonary fibrosis.
+    Sci Adv. 2020;6(28):eaba1983.
+  doi: 10.1126/sciadv.aba1983
+  technology: 10x Genomics Chromium Single Cell 3' (v2), Drop-seq tools / GRCh38
+  base_url: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE136nnn/GSE136831/suppl/
+  files:
+    - GSE136831_RawCounts_Sparse.mtx.gz
+    - GSE136831_AllCells.GeneIDs.txt.gz
+    - GSE136831_AllCells.cellBarcodes.txt.gz
+    - GSE136831_AllCells.Samples.CellType.MetadataTable.txt.gz
+  extra:
+    - url: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE136nnn/GSE136831/soft/GSE136831_family.soft.gz
+      file: GSE136831_family.soft.gz
