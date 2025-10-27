@@ -29,6 +29,33 @@ OUT = ROOT / "notebooks"
 LOGS = ROOT / "logs" / "notebooks"
 
 
+def activate_env() -> None:
+    """Emulate `conda activate` for this process and the kernels it starts.
+
+    On Windows, MKL loads some of its DLLs lazily through PATH. Without the
+    environment's Library\\bin first on PATH, an older MKL from the base
+    installation can be picked up and the kernel crashes (0xc06d007f) at the
+    first BLAS call. Prepending the env folders avoids that.
+    """
+    prefix = Path(sys.prefix)
+    if platform.system() == "Windows":
+        dirs = [prefix, prefix / "Library" / "mingw-w64" / "bin", prefix / "Library" / "usr" / "bin",
+                prefix / "Library" / "bin", prefix / "Scripts", prefix / "bin"]
+    else:
+        dirs = [prefix / "bin"]
+    os.environ["PATH"] = os.pathsep.join([str(d) for d in dirs] + [os.environ.get("PATH", "")])
+    os.environ["CONDA_PREFIX"] = str(prefix)
+    os.environ.setdefault("PYTHONUTF8", "1")
+    tmp = ROOT / ".cache" / "tmp"
+    tmp.mkdir(parents=True, exist_ok=True)
+    for var in ("TMP", "TEMP", "TMPDIR"):
+        os.environ[var] = str(tmp)
+    # kernel history and connection files, which IPython/Jupyter otherwise keep in the user profile
+    for var, sub in (("IPYTHONDIR", "ipython"), ("JUPYTER_RUNTIME_DIR", "jupyter_runtime")):
+        (ROOT / ".cache" / sub).mkdir(parents=True, exist_ok=True)
+        os.environ[var] = str(ROOT / ".cache" / sub)
+
+
 def run(nb_py: Path, kernel: str) -> float:
     ipynb = OUT / f"{nb_py.stem}.ipynb"
     subprocess.run([sys.executable, "-m", "jupytext", "--to", "ipynb", "--update-metadata",
@@ -56,6 +83,7 @@ def main() -> None:
     ap.add_argument("--from", dest="start", help="run this notebook and all later ones")
     ap.add_argument("--kernel", default="scrna-ipf")
     args = ap.parse_args()
+    activate_env()
 
     nbs = sorted(SRC.glob("[0-9][0-9]_*.py"))
     if args.select:
