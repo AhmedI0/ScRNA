@@ -60,6 +60,29 @@ adata.obs[["total_counts", "n_genes_by_counts", "pct_counts_mt", "pct_counts_rib
            "pct_counts_in_top_20_genes"]].describe().round(1)
 
 # %% [markdown]
+# ### Choosing the hard floors
+# Lung libraries mix very large cells (alveolar macrophages, >10,000 UMIs) with
+# very small ones (lymphocytes), so per-library MADs are wide and the MAD rule
+# alone barely removes low-capture barcodes. Barcodes binned by detected genes
+# show that those with <500 genes have a median of only ~640 UMIs (vs. ~1,160 at
+# 500-750 genes) while their mitochondrial fraction is normal - the profile of
+# droplets dominated by ambient RNA rather than of damaged cells. We therefore set
+# hard floors of **500 genes and 1,000 UMIs**: stricter than Cell Ranger's call,
+# but gentler than the 1,000-gene cut-off of the original study, which removes
+# small immune cells.
+
+# %%
+bins = [0, 300, 500, 750, 1000, 1500, 2000, np.inf]
+gb = pd.cut(adata.obs["n_genes_by_counts"], bins, right=False)
+gene_bins = adata.obs.groupby(gb, observed=True).agg(
+    barcodes=("total_counts", "size"),
+    median_umis=("total_counts", "median"),
+    median_pct_mito=("pct_counts_mt", "median"),
+    fraction_kept_by_authors=("author_qc_pass", "mean")).round(2)
+write_table(gene_bins, TAB / "barcodes_by_detected_genes")
+gene_bins
+
+# %% [markdown]
 # ## 2. Distributions per library
 # Libraries are ordered by diagnosis; dashed lines mark the hard floors.
 
