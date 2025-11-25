@@ -29,10 +29,20 @@ def run_scrublet(adata: AnnData, batch_key: str, expected_rate: float = 0.06, se
 
 
 def run_scdblfinder(adata: AnnData, rscript: str, r_script: Path, workdir: Path, batch_key: str,
-                    threads: int = 8) -> pd.DataFrame:
-    """Export counts to HDF5, run workflow/R/scdblfinder.R, read the calls back."""
+                    threads: int = 8, reuse: bool = True) -> pd.DataFrame:
+    """Export counts to HDF5, run workflow/R/scdblfinder.R, read the calls back.
+
+    With ``reuse=True`` an existing calls file covering exactly these barcodes is
+    read instead of re-running the (slow) R step.
+    """
     workdir.mkdir(parents=True, exist_ok=True)
     out = workdir / "scdblfinder_calls.csv"
+    if reuse and out.exists():
+        res = pd.read_csv(out, index_col="barcode")
+        if len(res) == adata.n_obs and res.index.isin(adata.obs_names).all():
+            log.info(f"re-using scDblFinder calls from {out}")
+            res["scDblFinder_doublet"] = res["scDblFinder_class"].eq("doublet")
+            return res.reindex(adata.obs_names)[["scDblFinder_score", "scDblFinder_class", "scDblFinder_doublet"]]
     h5 = write_sparse_h5(adata, workdir / "counts_for_scdblfinder.h5", layer="counts", obs_cols=[batch_key])
     run_r(rscript, r_script, h5, out, str(threads), log_file=workdir / "scdblfinder.log")
     res = pd.read_csv(out, index_col="barcode")
