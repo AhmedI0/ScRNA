@@ -9,8 +9,11 @@ library* using the median absolute deviation (MAD):
 
     outlier  <=>  |x - median(x)| > n * MAD(x)
 
-on log-transformed library size and detected genes (both tails) and on the
-fraction of counts in the top-20 genes (upper tail: low-complexity cells).
+on log-transformed library size and detected genes (both tails). The fraction
+of counts in the top-20 genes (upper tail) is computed and reported but, by
+default, not used for filtering: in lung it is driven by cell identity
+(plasma, goblet, club and AT2 cells are dominated by a few secretory
+transcripts), so filtering on it removes whole cell types (Notebook 02).
 Because lung libraries mix very large (macrophages) and very small
 (lymphocytes) cells, MAD bounds are wide; hard floors on genes and UMIs
 therefore remove ambient-rich, low-capture barcodes. Mitochondrial
@@ -88,7 +91,9 @@ def flag_outliers(adata: AnnData, cfg_qc: dict, groupby: str = "library_id") -> 
     flags = flags.astype(bool)
     for c in flags.columns:
         obs[c] = flags[c]
-    obs["qc_fail"] = flags.any(axis=1)
+    # only the configured criteria remove cells; the others are reported
+    used = [f"outlier_{f}" for f in cfg_qc.get("filter_on", ["counts", "genes", "top20", "mito", "hard"])]
+    obs["qc_fail"] = flags[used].any(axis=1)
     thr = pd.DataFrame(thresholds).set_index(groupby)
     thr["n_fail"] = obs.groupby(groupby, observed=True)["qc_fail"].sum()
     thr["pct_fail"] = 100 * thr["n_fail"] / thr["n_barcodes"]

@@ -45,9 +45,11 @@ qc:
   # data-driven outlier detection per library (median +/- n * MAD)
   nmads_counts: 4          # both tails of log1p(total counts)
   nmads_genes: 4           # both tails of log1p(detected genes)
-  nmads_top20: 5           # upper tail only: low-complexity cells
+  nmads_top20: 5           # upper tail only; REPORTED, not filtered (removes plasma/secretory cells, Notebook 02)
   nmads_mito: 3
-  mito_floor: 10          # MAD-based mito threshold is bounded to [mito_floor, max_pct_mito]
+  mito_floor: 15           # MAD-based mito threshold is bounded to [mito_floor, max_pct_mito]
+                           #   (a 10 % floor removed 18 % of mitochondria-rich ciliated cells)
+  filter_on: [counts, genes, mito, hard]   # flags that define qc_fail
   max_pct_mito: 25        # same ceiling as the original study
   min_genes: 500           # hard floor: 300-500-gene barcodes had a median of ~640 UMIs
   min_counts: 1000         #   and resembled ambient-rich droplets (Notebook 02, section 1)

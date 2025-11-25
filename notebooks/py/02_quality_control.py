@@ -24,7 +24,8 @@
 # 1. per-cell metrics: library size, detected genes, % mitochondrial, % ribosomal,
 #    % haemoglobin, % counts in the top-20 genes;
 # 2. per-library outlier detection with median ± *n*·MAD (robust to the
-#    library-to-library differences in depth seen in Notebook 01);
+#    library-to-library differences in depth seen in Notebook 01), checked
+#    against cell identity so that QC does not remove whole cell types;
 # 3. doublet detection with **scDblFinder** (primary) and **Scrublet** (secondary);
 # 4. removal of genes detected in fewer than 10 cells.
 
@@ -123,6 +124,36 @@ write_table(thr.round(2), TAB / "qc_thresholds_per_library")
 flag_cols = ["outlier_counts", "outlier_genes", "outlier_top20", "outlier_mito", "outlier_hard"]
 print(adata.obs[flag_cols + ["qc_fail"]].sum())
 thr.sort_values("pct_fail", ascending=False).head(10)
+
+# %% [markdown]
+# ### QC must not remove biology
+# MAD thresholds assume that a metric's spread is technical. For the % of counts
+# in the top-20 genes this is false: cells whose transcriptome is dominated by a
+# few secretory products - plasma cells (immunoglobulins), goblet and club cells
+# (MUC5B, SCGB1A1, SCGB3A1), AT2 cells (SFTPC) - are "low-complexity" by biology.
+# For the cells the original authors annotated, the table shows the fraction
+# flagged by each criterion. The top-20 criterion flags most plasma cells and
+# about half of the secretory cells, so it is **reported but not used for
+# filtering**. For the same reason the mitochondrial threshold has a floor of
+# 15 %: mitochondria-rich ciliated cells lost 18 % of their cells with a 10 % floor.
+
+# %%
+auth = adata.obs["author_qc_pass"].astype(bool)
+by_type = adata.obs.loc[auth].groupby("author_celltype", observed=True)[flag_cols + ["qc_fail"]].mean().mul(100)
+by_type["n_cells"] = adata.obs.loc[auth, "author_celltype"].value_counts()
+by_type = by_type.sort_values("outlier_top20", ascending=False)
+write_table(by_type.round(1), TAB / "qc_flags_by_author_celltype")
+fig, ax = plt.subplots(figsize=figsize(110, 100))
+sns.heatmap(by_type[flag_cols + ["qc_fail"]].rename(columns=lambda c: c.replace("outlier_", "")), annot=True,
+            fmt=".0f", cmap="Reds", vmin=0, vmax=60, ax=ax, annot_kws={"fontsize": 4.5},
+            cbar_kws={"label": "% of author-annotated cells flagged"})
+ax.set_ylabel("author cell type")
+ax.set_xlabel("")
+ax.tick_params(labelsize=5)
+ax.set_title("QC flags by cell type (qc_fail = criteria used for filtering)")
+save_figure(fig, "S2_qc_flags_by_celltype", FIG)
+plt.show()
+by_type.head(8).round(1)
 
 # %%
 fig = plt.figure(figsize=figsize(120, 70))
