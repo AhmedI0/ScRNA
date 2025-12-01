@@ -45,3 +45,17 @@ def test_is_outlier_one_sided():
 def test_gene_groups(toy):
     qc.annotate_gene_groups(toy)
     assert toy.var["mt"].sum() == 3
+
+
+def test_qc_fail_uses_only_configured_criteria(toy):
+    qc.annotate_gene_groups(toy)
+    qc.compute_qc_metrics(toy, layer="counts")
+    cfg = {"nmads_counts": 4, "nmads_genes": 4, "nmads_top20": 0.01, "nmads_mito": 3, "mito_floor": 15,
+           "max_pct_mito": 100, "min_genes": 0, "min_counts": 0}
+    qc.flag_outliers(toy, {**cfg, "filter_on": ["counts", "genes", "mito", "hard"]}, groupby="donor_id")
+    used = toy.obs[["outlier_counts", "outlier_genes", "outlier_mito", "outlier_hard"]].any(axis=1)
+    assert toy.obs["qc_fail"].equals(used)
+    only_top20 = toy.obs["outlier_top20"] & ~used   # flagged by the top-20 rule alone ...
+    assert only_top20.any() and not toy.obs.loc[only_top20, "qc_fail"].any()   # ... are kept
+    qc.flag_outliers(toy, {**cfg, "filter_on": ["top20"]}, groupby="donor_id")
+    assert toy.obs["qc_fail"].equals(toy.obs["outlier_top20"])
