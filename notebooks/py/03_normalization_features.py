@@ -45,6 +45,7 @@ import pandas as pd
 import scanpy as sc
 import scipy.sparse as sp
 
+from ipfatlas import features
 from ipfatlas.config import setup
 from ipfatlas.plotting import (
     CONDITION_COLORS,
@@ -107,7 +108,7 @@ for ax, (m, v, t) in zip(axes, [(m_raw, v_raw, "raw counts"), (m_raw, v_log, "sh
     ax.set_xlabel("mean raw count per gene")
     ax.set_ylabel("variance")
     ax.set_title(t)
-axes[0].axline((1e-2, 1e-2), slope=1, color="red", lw=0.6, ls="--", label="Poisson (var = mean)")
+axes[0].axline((1e-2, 1e-2), (1e1, 1e1), color="red", lw=0.6, ls="--", label="Poisson (var = mean)")
 axes[0].legend(fontsize=5)
 for a, l in zip(axes, "abc"):
     panel_label(a, l)
@@ -140,9 +141,7 @@ adata.obs["phase"].value_counts(normalize=True).round(3)
 # ## 4. Highly variable genes
 
 # %%
-sc.pp.highly_variable_genes(adata, flavor=F["hvg_flavor"], n_top_genes=F["n_top_genes"], layer="counts",
-                            batch_key="library_id")
-hvg = adata.var_names[adata.var["highly_variable"]]
+hvg = features.select_hvgs(adata, F, batch_key="library_id")
 print(f"{len(hvg)} HVGs; top-ranked: {', '.join(adata.var.loc[hvg].sort_values('highly_variable_rank').index[:25])}")
 write_table(adata.var.loc[hvg, ["highly_variable_rank", "highly_variable_nbatches"]].sort_values(
     "highly_variable_rank"), TAB / "highly_variable_genes")
