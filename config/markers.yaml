@@ -1,0 +1,68 @@
+# Curated canonical marker genes for human lung cell types.
+# Sources: Travaglini et al. 2020 Nature (human lung cell atlas); Sikkema et al.
+# 2023 Nat Med (HLCA); Habermann et al. 2020 and Adams et al. 2020 Sci Adv (IPF);
+# Strunz et al. 2020 Nat Commun / Kobayashi et al. 2020 Nat Cell Biol (KRT8hi
+# transitional cells); Morse et al. 2019 ERJ (SPP1hi macrophages);
+# Tsukui et al. 2020 Nat Commun (CTHRC1+ fibroblasts); Gillich et al. 2020 Nature
+# (aerocyte / general capillary EC).
+
+compartment:
+  Epithelial: [EPCAM, CDH1, KRT8, KRT18, NKX2-1]
+  Immune: [PTPRC, CORO1A, LAPTM5]
+  Endothelial: [PECAM1, CDH5, CLDN5, VWF]
+  Mesenchymal: [COL1A2, COL3A1, DCN, LUM, PDGFRB]
+
+epithelial:
+  AT1: [AGER, RTKN2, CLIC5, EMP2, CAV1, HOPX]
+  AT2: [SFTPC, SFTPA1, SFTPA2, LAMP3, ABCA3, NAPSA]
+  Transitional AT2: [KRT8, CLDN4, SFN, CDKN1A, KRT7, AQP3]
+  Aberrant basaloid: [KRT17, LAMB3, LAMC2, MMP7, COL1A1, FN1, VIM, CDKN2A, GDF15, ITGB6]
+  Basal: [KRT5, TP63, KRT15, S100A2]
+  Secretory (club/goblet): [SCGB1A1, SCGB3A1, MUC5B, BPIFB1, MUC5AC]
+  SCGB3A2+ secretory: [SCGB3A2, SFTPB, SCGB1A1]
+  Ciliated: [FOXJ1, TPPP3, CAPS, PIFO, DNAH5]
+  PNEC: [CALCA, ASCL1, CHGA, GRP]
+  Ionocyte: [FOXI1, CFTR, ASCL3]
+  Mesothelial: [MSLN, UPK3B, WT1, CALB2]
+
+mesenchymal:
+  Alveolar fibroblasts: [SCN7A, ITGA8, FGFR4, TCF21, SPINT2, GPC3]
+  Adventitial fibroblasts: [PI16, SFRP2, SCARA5, MFAP5, SERPINF1]
+  Myofibroblasts: [CTHRC1, POSTN, COL1A1, ASPN, COMP, ACTA2]
+  HAS1hi fibroblasts: [HAS1, HAS2, PRG4]
+  PLIN2+ fibroblasts: [PLIN2, MEDAG]
+  Smooth muscle: [MYH11, DES, CNN1, ACTA2, ACTG2]
+  Pericytes: [RGS5, HIGD1B, KCNJ8, NOTCH3]
+
+endothelial:
+  Aerocyte capillary EC: [CA4, EDNRB, HPGD, APLN, SOSTDC1, TBX2]
+  General capillary EC: [APLNR, GPIHBP1, FCN3, IL7R, PLVAP]
+  Arterial EC: [GJA5, DKK2, BMX, HEY1, SEMA3G]
+  Venous EC: [ACKR1, CPE, SELP]
+  Systemic venous EC (COL15A1+): [COL15A1, PLVAP, VWA1, SPARCL1]
+  Lymphatic EC: [PROX1, CCL21, TFF3, MMRN1]
+
+immune:
+  Alveolar macrophages: [MARCO, FABP4, INHBA, MCEMP1, PPARG]
+  SPP1hi macrophages: [SPP1, MERTK, CHI3L1, TREM2, GPNMB, CHIT1]
+  Interstitial macrophages: [F13A1, LYVE1, FOLR2, STAB1]
+  Classical monocytes: [S100A8, S100A12, VCAN, FCN1, CD300E]   # not CD14/LYZ: high in macrophages too
+  Non-classical monocytes: [FCGR3A, CX3CR1, LST1]
+  cDC: [CD1C, FCER1A, CLEC10A, CLEC9A, CCR7]
+  pDC: [LILRA4, CLEC4C, IL3RA]
+  Mast cells: [TPSAB1, CPA3, KIT, MS4A2]
+  CD4 T cells: [CD3E, CD4, IL7R]
+  CD8 T cells: [CD3E, CD8A, CD8B]
+  Treg: [FOXP3, IL2RA, CTLA4]
+  NK cells: [KLRF1, NCR1, SH2D1B, PRF1, GNLY]   # not NKG7/KLRD1: shared with effector CD8 T cells
+  B cells: [MS4A1, CD79A, CD19]
+  Plasma cells: [JCHAIN, MZB1, XBP1]
+
+proliferation: [MKI67, TOP2A, CENPF, NUSAP1]
+
+# Doublet sanity check: co-expression of two lineage programmes in one cluster
+lineage_pairs:
+  - [PTPRC, EPCAM]
+  - [PTPRC, PECAM1]
+  - [EPCAM, COL1A2]
+  - [PECAM1, COL1A2]
