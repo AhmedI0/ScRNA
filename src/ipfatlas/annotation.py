@@ -111,3 +111,112 @@ def majority_label(adata: AnnData, groupby: str, label_key: str) -> pd.DataFrame
     second = ct.apply(lambda r: r.sort_values(ascending=False).index[1] if (r > 0).sum() > 1 else "", axis=1)
     return pd.DataFrame({"top_label": top, "purity": purity.round(3), "second_label": second,
                          "n_cells": ct.sum(axis=1)})
+
+
+# HLCA (CellTypist Human_Lung_Atlas) labels -> labels of this atlas. Used only when the
+# marker call of a cluster is ambiguous. Labels without an unambiguous counterpart
+# (e.g. AT0, peribronchial fibroblasts) are deliberately left out.
+CELLTYPIST_TO_LABEL = {
+    "AT1": "AT1", "AT2": "AT2", "AT2 proliferating": "AT2",
+    "pre-TB secretory": "SCGB3A2+ secretory", "Club (non-nasal)": "Secretory (club/goblet)",
+    "Club (nasal)": "Secretory (club/goblet)", "Goblet (bronchial)": "Secretory (club/goblet)",
+    "Goblet (nasal)": "Secretory (club/goblet)", "Goblet (subsegmental)": "Secretory (club/goblet)",
+    "Multiciliated (non-nasal)": "Ciliated", "Multiciliated (nasal)": "Ciliated", "Deuterosomal": "Ciliated",
+    "Basal resting": "Basal", "Suprabasal": "Basal", "Hillock-like": "Basal",
+    "Neuroendocrine": "PNEC", "Ionocyte": "Ionocyte", "Mesothelium": "Mesothelial",
+    "Alveolar fibroblasts": "Alveolar fibroblasts", "Adventitial fibroblasts": "Adventitial fibroblasts",
+    "Myofibroblasts": "Myofibroblasts", "Smooth muscle": "Smooth muscle",
+    "Smooth muscle FAM83D+": "Smooth muscle", "SM activated stress response": "Smooth muscle",
+    "Pericytes": "Pericytes",
+    "EC aerocyte capillary": "Aerocyte capillary EC", "EC general capillary": "General capillary EC",
+    "EC arterial": "Arterial EC", "EC venous pulmonary": "Venous EC",
+    "EC venous systemic": "Systemic venous EC (COL15A1+)", "Lymphatic EC mature": "Lymphatic EC",
+    "Lymphatic EC differentiating": "Lymphatic EC", "Lymphatic EC proliferating": "Lymphatic EC",
+    "Alveolar macrophages": "Alveolar macrophages", "Alveolar Mph CCL3+": "Alveolar macrophages",
+    "Alveolar Mph MT-positive": "Alveolar macrophages", "Alveolar Mph proliferating": "Proliferating macrophages",
+    "Monocyte-derived Mph": "Monocyte-derived macrophages", "Interstitial Mph perivascular": "Interstitial macrophages",
+    "Classical monocytes": "Classical monocytes", "Non-classical monocytes": "Non-classical monocytes",
+    "DC1": "cDC", "DC2": "cDC", "Migratory DCs": "cDC", "Plasmacytoid DCs": "pDC", "Mast cells": "Mast cells",
+    "CD4 T cells": "CD4 T cells", "CD8 T cells": "CD8 T cells", "NK cells": "NK cells", "B cells": "B cells",
+    "Plasma cells": "Plasma cells",
+}
+
+
+def subcluster(adata: AnnData, mask: np.ndarray, use_rep: str, resolution: float, prefix: str,
+               n_neighbors: int = 15, seed: int = 0) -> pd.Series:
+    """Leiden clustering of a subset on its own kNN graph (exact neighbours, reproducible).
+
+    Only the embedding is copied, not the expression matrix. Returns labels
+    ``f"{prefix}{cluster}"`` for the masked cells.
+    """
+    sub = AnnData(obs=adata.obs.loc[mask, []].copy())
+    sub.obsm[use_rep] = np.asarray(adata.obsm[use_rep][mask])
+    return (prefix + leiden_on(sub, use_rep, resolution, n_neighbors, seed)).rename("subcluster")
+
+
+def leiden_on(adata: AnnData, use_rep: str, resolution: float, n_neighbors: int = 15, seed: int = 0) -> pd.Series:
+    """Leiden on an exact kNN graph of ``use_rep`` (reproducible for a given embedding)."""
+    from sklearn.neighbors import KNeighborsTransformer
+
+    sc.pp.neighbors(adata, use_rep=use_rep, n_neighbors=n_neighbors, random_state=seed, key_added="_sub",
+                    transformer=KNeighborsTransformer(n_neighbors=n_neighbors, n_jobs=-1))
+    sc.tl.leiden(adata, resolution=resolution, flavor="igraph", n_iterations=2, random_state=seed,
+                 neighbors_key="_sub", key_added="_leiden")
+    return adata.obs.pop("_leiden").astype(str)
+
+
+def reembed(adata: AnnData, cfg_features: dict, batch_key: str, n_top_genes: int = 2000, n_pcs: int = 30,
+            min_cells_per_batch: int = 100, theta: float = 2.0, key: str = "X_sub", seed: int = 0) -> None:
+    """New HVGs, PCA and Harmony for a subset of cells (in place, stored in ``obsm[key]``).
+
+    In a global PCA the axes are dominated by differences between lineages, so
+    variation that separates states within one lineage (AT1 vs transitional AT2
+    vs aberrant basaloid) is diluted. Re-embedding each compartment recovers it,
+    as in the original study and the HLCA.
+    """
+    from .features import select_hvgs
+    from .integration import run_harmony
+
+    select_hvgs(adata, {**cfg_features, "n_top_genes": n_top_genes}, batch_key,
+                min_cells_per_batch=min_cells_per_batch)
+    sc.pp.pca(adata, n_comps=n_pcs, mask_var="highly_variable", random_state=seed)
+    adata.obsm[key] = run_harmony(adata, batch_key, theta=theta, seed=seed)
+
+
+def detection_scores(adata: AnnData, groupby: str, sets: dict[str, list]) -> pd.DataFrame:
+    """Per cluster: fraction of cells detecting each marker, averaged over the set.
+
+    Unlike control-gene-subtracted scores (``scanpy.tl.score_genes``), this is not
+    distorted by total RNA content: RNA-rich alveolar macrophages get a near-zero
+    or negative immune *score* because their control genes are also high, although
+    almost all of them detect TYROBP, LAPTM5 and FCER1G.
+    """
+    genes = sorted({g for gs in sets.values() for g in gs if g in adata.var_names})
+    X = adata[:, genes].X > 0
+    det = pd.DataFrame(X.toarray() if hasattr(X, "toarray") else np.asarray(X), index=adata.obs_names, columns=genes)
+    frac = det.groupby(adata.obs[groupby].to_numpy()).mean()
+    return pd.DataFrame({k: frac[[g for g in gs if g in genes]].mean(axis=1) for k, gs in sets.items()})
+
+
+def assign_by_scores(cluster_scores: pd.DataFrame, min_margin: float = 0.05) -> pd.DataFrame:
+    """Best-scoring marker set per cluster, with the runner-up and the margin between them."""
+    s = cluster_scores
+    order = np.argsort(-s.to_numpy(), axis=1)
+    top = s.columns[order[:, 0]]
+    second = s.columns[order[:, 1]]
+    v = np.sort(s.to_numpy(), axis=1)[:, ::-1]
+    out = pd.DataFrame({"marker_label": top, "runner_up": second, "top_score": v[:, 0].round(3),
+                        "margin": (v[:, 0] - v[:, 1]).round(3)}, index=s.index)
+    out["confident"] = out["margin"] >= min_margin
+    return out
+
+
+def top_markers(adata: AnnData, groupby: str, n: int = 8, max_cells: int = 300, seed: int = 0) -> pd.Series:
+    """Top up-regulated genes per group (t-test on a per-group subsample; descriptive only)."""
+    rng = np.random.default_rng(seed)
+    idx = np.concatenate([rng.choice(np.where(adata.obs[groupby] == g)[0], min(max_cells, (adata.obs[groupby] == g).sum()),
+                                     replace=False) for g in adata.obs[groupby].cat.categories])
+    sub = adata[np.sort(idx)].copy()
+    sc.tl.rank_genes_groups(sub, groupby, method="t-test_overestim_var", n_genes=n)
+    names = pd.DataFrame(sub.uns["rank_genes_groups"]["names"])
+    return names.apply(lambda c: ", ".join(c.astype(str))).rename("top_genes")
