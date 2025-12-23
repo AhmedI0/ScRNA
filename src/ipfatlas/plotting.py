@@ -136,6 +136,30 @@ def palette_for(categories: Sequence[str], base: dict | None = None) -> dict[str
     return out
 
 
+# colour families per compartment (light -> dark); cell types of one compartment share a hue
+_COMPARTMENT_RAMPS = {
+    "Epithelial": ["#FDD0A2", "#FDAE6B", "#FD8D3C", "#F16913", "#D94801", "#A63603", "#E7298A", "#C51B7D",
+                   "#8E0152", "#F4A582", "#B2182B", "#67001F", "#FEC44F"],
+    "Immune": ["#C6DBEF", "#9ECAE1", "#6BAED6", "#4292C6", "#2171B5", "#08519C", "#08306B", "#BCBDDC",
+               "#9E9AC8", "#807DBA", "#6A51A3", "#54278F", "#3F007D", "#80CDC1", "#35978F", "#01665E"],
+    "Endothelial": ["#C7E9C0", "#A1D99B", "#74C476", "#41AB5D", "#238B45", "#005A32"],
+    "Mesenchymal": ["#F6E8C3", "#DFC27D", "#BF812D", "#8C510A", "#543005", "#C2A5CF", "#9970AB", "#762A83"],
+}
+
+
+def compartment_palette(celltype_to_compartment: dict[str, str]) -> dict[str, str]:
+    """Colours that group cell types by compartment (warm epithelium, blue/purple immune,
+    green endothelium, brown/purple mesenchyme), in the order the cell types are given."""
+    used: dict[str, int] = {}
+    out = {}
+    for ct, comp in celltype_to_compartment.items():
+        ramp = _COMPARTMENT_RAMPS.get(comp, CATEGORICAL)
+        i = used.get(comp, 0)
+        out[ct] = ramp[i % len(ramp)]
+        used[comp] = i + 1
+    return out
+
+
 def panel_label(ax: plt.Axes, label: str, x: float = -0.12, y: float = 1.06, size: float = 9) -> None:
     """Bold lowercase panel letter (Nature style) in axes coordinates."""
     ax.text(x, y, label, transform=ax.transAxes, fontsize=size, fontweight="bold", va="bottom", ha="left")
