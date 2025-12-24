@@ -8,8 +8,8 @@
 
 compartment:
   Epithelial: [EPCAM, CDH1, KRT8, KRT18, NKX2-1]
-  Immune: [PTPRC, CORO1A, LAPTM5]
-  Endothelial: [PECAM1, CDH5, CLDN5, VWF]
+  Immune: [PTPRC, CORO1A, LAPTM5, LCP1, CD53, TYROBP, FCER1G]
+  Endothelial: [CDH5, CLDN5, VWF, EGFL7]   # not PECAM1: also on monocytes/macrophages
   Mesenchymal: [COL1A2, COL3A1, DCN, LUM, PDGFRB]
 
 epithelial:
@@ -19,11 +19,10 @@ epithelial:
   Aberrant basaloid: [KRT17, LAMB3, LAMC2, MMP7, COL1A1, FN1, VIM, CDKN2A, GDF15, ITGB6]
   Basal: [KRT5, TP63, KRT15, S100A2]
   Secretory (club/goblet): [SCGB1A1, SCGB3A1, MUC5B, BPIFB1, MUC5AC]
-  SCGB3A2+ secretory: [SCGB3A2, SFTPB, SCGB1A1]
+  SCGB3A2+ secretory: [SCGB3A2, SCGB1A1, CYB5A, CXCL17]
   Ciliated: [FOXJ1, TPPP3, CAPS, PIFO, DNAH5]
   PNEC: [CALCA, ASCL1, CHGA, GRP]
   Ionocyte: [FOXI1, CFTR, ASCL3]
-  Mesothelial: [MSLN, UPK3B, WT1, CALB2]
 
 mesenchymal:
   Alveolar fibroblasts: [SCN7A, ITGA8, FGFR4, TCF21, SPINT2, GPC3]
@@ -33,6 +32,7 @@ mesenchymal:
   PLIN2+ fibroblasts: [PLIN2, MEDAG]
   Smooth muscle: [MYH11, DES, CNN1, ACTA2, ACTG2]
   Pericytes: [RGS5, HIGD1B, KCNJ8, NOTCH3]
+  Mesothelial: [MSLN, UPK3B, WT1, CALB2]   # stromal compartment, as in the HLCA
 
 endothelial:
   Aerocyte capillary EC: [CA4, EDNRB, HPGD, APLN, SOSTDC1, TBX2]
@@ -60,9 +60,12 @@ immune:
 
 proliferation: [MKI67, TOP2A, CENPF, NUSAP1]
 
-# Doublet sanity check: co-expression of two lineage programmes in one cluster
+# Doublet sanity check: co-expression of two lineage programmes in one cluster.
+# CLDN5 rather than PECAM1 marks endothelium: PECAM1 (CD31) is also expressed by
+# 45-65 % of monocytes and macrophages, which would make every macrophage cluster
+# look like an immune-endothelial doublet.
 lineage_pairs:
   - [PTPRC, EPCAM]
-  - [PTPRC, PECAM1]
+  - [PTPRC, CLDN5]
   - [EPCAM, COL1A2]
-  - [PECAM1, COL1A2]
+  - [CLDN5, COL1A2]
