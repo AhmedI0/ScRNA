@@ -26,10 +26,15 @@ from .utils import log, timer
 def run_harmony(adata: AnnData, batch_key: str, theta: float = 2.0, basis: str = "X_pca",
                 seed: int = 0) -> np.ndarray:
     import harmonypy
+    from threadpoolctl import threadpool_limits
 
-    with timer("Harmony"):
-        ho = harmonypy.run_harmony(adata.obsm[basis], adata.obs[[batch_key]], batch_key,
-                                   theta=theta, random_state=seed, max_iter_harmony=20)
+    # Bit-for-bit reproducible: CPU instead of CUDA, and one BLAS/OpenMP thread for the
+    # k-means steps (multithreaded reductions change the result in the 3rd decimal,
+    # enough to move Leiden boundaries of rare states). Costs seconds, not minutes.
+    with timer("Harmony"), threadpool_limits(limits=1):
+        # contiguous copy: PCA can return negatively strided views, which torch rejects
+        ho = harmonypy.run_harmony(np.ascontiguousarray(adata.obsm[basis]), adata.obs[[batch_key]], batch_key,
+                                   theta=theta, random_state=seed, max_iter_harmony=20, device="cpu")
     z = np.asarray(ho.Z_corr)
     return z.T if z.shape[0] != adata.n_obs else z
 
