@@ -216,6 +216,7 @@ mdata["rna"].obs["diagnosis"] = pd.Categorical(mdata["rna"].obs["diagnosis"], ca
 milo.da_nhoods(mdata, design="~sex+diagnosis", model_contrasts=f"diagnosis{CASE}", solver="pydeseq2")
 milo.annotate_nhoods(mdata, anno_col="cell_type")
 nh = mdata["milo"].var.copy()
+nh["nhood_annotation"] = nh["nhood_annotation"].astype(str)  # categorical: "Mixed" is not a category
 nh.loc[nh["nhood_annotation_frac"] < 0.6, "nhood_annotation"] = "Mixed"
 mdata["milo"].var["nhood_annotation"] = nh["nhood_annotation"]
 write_table(nh, TAB / "milo_neighbourhoods")
