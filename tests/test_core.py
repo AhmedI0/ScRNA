@@ -47,6 +47,46 @@ def test_gene_groups(toy):
     assert toy.var["mt"].sum() == 3
 
 
+def test_pseudobulk_sums_counts(toy):
+    pb = pseudobulk.aggregate(toy, "celltype", "donor_id", "condition", covariates=["sex"], min_cells=5)
+    counts, meta = pb["A"]
+    mask = (toy.obs["celltype"] == "A") & (toy.obs["donor_id"] == "d0")
+    expected = np.asarray(toy.layers["counts"][mask.to_numpy()].sum(axis=0)).ravel()
+    np.testing.assert_array_equal(counts["d0"].to_numpy(), expected.round().astype(int))
+    assert set(meta.columns) >= {"condition", "sex", "n_cells"}
+    assert meta.loc["d0", "n_cells"] == 10
+
+
+def test_pseudobulk_min_cells(toy):
+    pb = pseudobulk.aggregate(toy, "celltype", "donor_id", "condition", min_cells=11)
+    assert pb == {}
+
+
+def test_safe_key():
+    assert pseudobulk.safe_key("KRT5-/KRT17+ cells") == "KRT5_KRT17_cells"
+
+
+def test_clr_rows_sum_to_zero():
+    counts = pd.DataFrame([[10, 5, 1], [3, 3, 3]], columns=list("abc"))
+    np.testing.assert_allclose(composition.clr(counts).sum(axis=1), 0, atol=1e-12)
+
+
+def test_save_figure_writes_all_formats(tmp_path):
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots()
+    ax.plot([0, 1], [0, 1])
+    paths = save_figure(fig, "t", tmp_path, close=True)
+    assert {p.suffix for p in paths} == {".svg", ".jpg", ".png"}
+    from PIL import Image
+
+    with Image.open(tmp_path / "t.jpg") as im:
+        assert round(im.info["dpi"][0]) == 300
+
+
 def test_qc_fail_uses_only_configured_criteria(toy):
     qc.annotate_gene_groups(toy)
     qc.compute_qc_metrics(toy, layer="counts")
