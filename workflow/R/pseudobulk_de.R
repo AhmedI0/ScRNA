@@ -56,8 +56,11 @@ for (k in seq_len(nrow(index))) {
   y <- y[keep, , keep.lib.sizes = FALSE]
   y <- normLibSizes(y)  # TMM
 
-  row <- data.table(celltype = ct, key = key, n_case = n_case, n_control = n_ctrl,
+  row <- data.table(celltype = ct, n_case = n_case, n_control = n_ctrl,
                     n_genes_tested = sum(keep), design = deparse(form))
+  # added afterwards: `key =` inside data.table() is its sort-key argument, not a column
+  set(row, j = "key", value = key)
+  setcolorder(row, c("celltype", "key"))
 
   if ("edgeR" %in% methods) {
     y <- estimateDisp(y, design)
