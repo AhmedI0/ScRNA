@@ -349,4 +349,8 @@ adata.obsm["fate_probabilities"] = fates.to_numpy()
 adata.uns["fate_names"] = list(fates.columns)
 for k in ["Ms", "Mu"]:
     adata.layers.pop(k, None)
+# CellRank stores macrostate memberships as its own Lineage array type, which h5ad cannot write
+for k in list(adata.obsm):
+    if type(adata.obsm[k]).__module__.startswith("cellrank"):
+        adata.obsm[k] = np.asarray(adata.obsm[k])
 adata.write_h5ad(P.processed / "epithelial_trajectory.h5ad", compression="lzf")
