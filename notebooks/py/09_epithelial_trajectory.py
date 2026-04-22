@@ -26,11 +26,19 @@
 # * **PAGA** (Wolf *et al.* 2019): graph abstraction showing which cell types are
 #   connected at all in the kNN graph.
 # * **Diffusion pseudotime** (DPT; Haghverdi *et al.* 2016) from a mature AT2 root.
-# * **CellRank 2** (Weiler *et al.* 2024) with the **CytoTRACE kernel** - direction
-#   is inferred from *transcriptional diversity* (number of expressed genes,
-#   Gulati *et al.* 2020), which is high in less-differentiated cells. The 5′ data
-#   have no reliable spliced/unspliced information for RNA velocity
-#   (5′ chemistry captures transcript starts, not intronic reads near 3′ ends).
+# * **CellRank 2** (Weiler *et al.* 2024) with a **pseudotime kernel**: transitions
+#   are biased towards increasing DPT, i.e. away from AT2 cells, the established
+#   progenitors of the alveolar epithelium (lineage tracing in mice, Barkauskas
+#   *et al.* 2013; human AT2 organoids). The direction is therefore an *assumption*
+#   taken from that literature; the data decide where cells go. The 5′ data have no
+#   reliable spliced/unspliced information for RNA velocity (5′ chemistry captures
+#   transcript starts, not intronic reads near 3′ ends).
+# * **CytoTRACE** (Gulati *et al.* 2020), which orients differentiation by
+#   transcriptional diversity, is computed as a diagnostic but **not used for the
+#   direction**: it ranks aberrant basaloid cells as the most potent cells of the
+#   lineage (they are large, transcriptionally active cells), which contradicts
+#   their senescence-like phenotype, and with it every cell, AT1 included, flowed
+#   into the aberrant basaloid state.
 # * **Snapshot caveat.** scRNA-seq of human tissue is a snapshot: a trajectory is a
 #   *hypothesis about ordering* consistent with transcriptional similarity, not a
 #   demonstration of lineage (which needs lineage tracing, possible only in mice).
@@ -52,6 +60,7 @@ from ipfatlas import annotation, pseudobulk
 from ipfatlas.config import rscript, setup
 from ipfatlas.plotting import (
     CONDITION_COLORS,
+    LINEAGE_COLORS,
     embedding_scatter,
     figsize,
     label_centroids,
@@ -59,7 +68,7 @@ from ipfatlas.plotting import (
     save_figure,
     set_style,
 )
-from ipfatlas.utils import log, write_table
+from ipfatlas.utils import write_table
 
 cfg, P = setup()
 set_style(cfg["figures"]["font_size"])
@@ -69,7 +78,7 @@ LINEAGE = cfg["trajectory"]["lineage"]
 CAP = 1800
 
 full = sc.read_h5ad(P.processed / "discovery_annotated.h5ad")
-colors = dict(zip(full.obs["cell_type"].cat.categories, full.uns["cell_type_colors"]))
+colors = LINEAGE_COLORS
 pd.crosstab(full.obs.loc[full.obs.cell_type.isin(LINEAGE), "cell_type"].astype(str),
             full.obs.loc[full.obs.cell_type.isin(LINEAGE), "diagnosis"])
 
@@ -132,23 +141,27 @@ adata.uns["iroot"] = int(at2[np.argmax(adata.obs["mk_AT2"].to_numpy()[at2])])
 sc.tl.dpt(adata)
 
 # %% [markdown]
-# ## 4. CellRank 2: CytoTRACE kernel + GPCCA
-# The CytoTRACE kernel needs smoothed expression ("Ms"), computed with scVelo's
+# ## 4. CellRank 2: pseudotime kernel + GPCCA
+# CytoTRACE (diagnostic) needs smoothed expression ("Ms"), computed with scVelo's
 # kNN moments on log-normalised expression (spliced = unspliced = X is the
-# documented way to use moments without velocity).
+# documented way to use moments without velocity). In the table, CytoTRACE
+# pseudotime 0 = highest potency.
 
 # %%
 adata.layers["spliced"] = adata.X
 adata.layers["unspliced"] = adata.X
 scv.pp.moments(adata, n_pcs=None, n_neighbors=30, use_rep="X_integrated")
-ctk = cr.kernels.CytoTRACEKernel(adata).compute_cytotrace()
-ctk.compute_transition_matrix(threshold_scheme="soft", nu=0.5)
-ck = cr.kernels.ConnectivityKernel(adata).compute_transition_matrix()
-kernel = 0.8 * ctk + 0.2 * ck  # small diffusion term for robustness
+cr.kernels.CytoTRACEKernel(adata).compute_cytotrace()
 del adata.layers["spliced"], adata.layers["unspliced"]
 
-pot = adata.obs.groupby("cell_type", observed=True)["ct_pseudotime"].agg(["median", "mean"]).sort_values("median")
-write_table(pot.round(3), TAB / "cytotrace_pseudotime_per_celltype")
+pk = cr.kernels.PseudotimeKernel(adata, time_key="dpt_pseudotime").compute_transition_matrix(
+    threshold_scheme="soft", nu=0.5)
+ck = cr.kernels.ConnectivityKernel(adata).compute_transition_matrix()
+kernel = 0.8 * pk + 0.2 * ck  # small diffusion term for robustness
+
+pot = (adata.obs.groupby("cell_type", observed=True)[["dpt_pseudotime", "ct_pseudotime"]].median()
+       .sort_values("dpt_pseudotime"))
+write_table(pot.round(3), TAB / "pseudotime_per_celltype")
 pot
 
 # %%
@@ -160,54 +173,57 @@ write_table(ms_comp, TAB / "gpcca_macrostates_composition")
 ms_comp
 
 # %% [markdown]
-# Terminal states are set to the hypothesised end points (AT1, aberrant
-# basaloid, basal). Where GPCCA found a macrostate dominated by that cell type,
-# its cells are used; otherwise the 30 most differentiated cells (lowest
-# CytoTRACE potency) of that type define the state. The macrostate table above
-# shows how well the unsupervised states match.
+# The unsupervised macrostates above separate AT1, AT2, aberrant basaloid and
+# basal cells: each end point is an attractor of the Markov chain. For the fate
+# probabilities, the **whole populations** of the hypothesised end points (AT1,
+# aberrant basaloid, basal) are the absorbing states, and the question is where a
+# random walk from an AT2 or transitional AT2 cell is absorbed first. A few
+# macrostate cells per end point would be too small a target: cells of the same
+# type outside it (AT1 cells below the pseudotime of the basal tip, for example)
+# then "flow on" into another end point.
 
 # %%
 TERMINAL = [t for t in ["AT1", "Aberrant basaloid", "Basal"] if t in adata.obs["cell_type"].cat.categories]
-terminal = {}
-for t in TERMINAL:
-    hits = [m for m in g.macrostates.cat.categories if m == t or m.startswith(f"{t}_")]
-    if hits:
-        terminal[t] = adata.obs_names[g.macrostates == hits[0]].tolist()
-        src = f"macrostate {hits[0]}"
-    else:
-        cells = adata.obs.index[adata.obs["cell_type"] == t]
-        terminal[t] = adata.obs.loc[cells, "ct_pseudotime"].nlargest(30).index.tolist()
-        src = "30 least-potent cells"
-    log.info(f"terminal state {t}: {len(terminal[t])} cells ({src})")
+TRANSIENT = ["AT2", "Transitional AT2"]
+terminal = {t: adata.obs_names[adata.obs["cell_type"] == t].tolist() for t in TERMINAL}
 g.set_terminal_states(states=terminal)
 g.compute_fate_probabilities(use_petsc=False, show_progress_bar=False)
 fates = pd.DataFrame(np.asarray(g.fate_probabilities), index=adata.obs_names, columns=g.fate_probabilities.names)
 for c in fates:
     adata.obs[f"fate_{c}"] = fates[c]
-fate_ct = fates.groupby(adata.obs["cell_type"].values).mean()
+transient = adata.obs["cell_type"].isin(TRANSIENT).to_numpy()
+fate_ct = fates[transient].groupby(adata.obs.loc[transient, "cell_type"].astype(str).values).mean()
 write_table(fate_ct.round(3), TAB / "fate_probabilities_mean_per_celltype")
 fate_ct.round(2)
 
 # %%
 fig, axes = plt.subplots(1, 4, figsize=figsize(183, 50))
 xy = adata.obsm["X_umap"]
-for ax, (col, title, cmap) in zip(axes, [("ct_pseudotime", "CytoTRACE pseudotime\n(0 = high potency)", "viridis"),
-                                         ("dpt_pseudotime", "diffusion pseudotime\n(root: mature AT2)", "viridis"),
-                                         ("fate_AT1", "fate probability: AT1", "magma_r"),
-                                         ("fate_Aberrant basaloid", "fate probability: aberrant basaloid",
-                                          "magma_r")]):
-    sca = embedding_scatter(ax, xy, adata.obs[col], cmap=cmap, s=1.2, order="value")
+for ax, (col, title, cmap) in zip(axes, [("ct_pseudotime", "CytoTRACE (diagnostic)", "viridis"),
+                                         ("dpt_pseudotime", "diffusion pseudotime", "viridis"),
+                                         ("fate_AT1", "fate: AT1", "magma_r"),
+                                         ("fate_Aberrant basaloid", "fate: aberrant basaloid", "magma_r")]):
+    if col.startswith("fate_"):  # fates are defined for the cells in transit; end points in grey
+        ax.scatter(xy[~transient, 0], xy[~transient, 1], s=1.2, color="#DDDDDD", lw=0, rasterized=True)
+        sca = embedding_scatter(ax, xy[transient], adata.obs.loc[transient, col], cmap=cmap, s=1.2,
+                                order="value", vmin=0, vmax=1)
+    else:
+        sca = embedding_scatter(ax, xy, adata.obs[col], cmap=cmap, s=1.2, order="value")
     plt.colorbar(sca, ax=ax, shrink=0.55)
     ax.set_title(title)
 for a, l in zip(axes, "abcd"):
-    panel_label(a, l, x=0.0)
+    panel_label(a, l, x=-0.08)
 fig.tight_layout()
 save_figure(fig, "Fig4_pseudotime_fates", FIG)
 plt.show()
 
 # %% [markdown]
 # ### Do transitional cells from IPF lungs lean towards the aberrant fate?
-# Compared per **donor** (mean over cells), not per cell.
+# Compared per **donor** (mean over cells), not per cell. Only donors with ≥ 10
+# transitional cells are used, so the comparison has little power: no difference
+# here means the fate bias is not *detectably* different, not that IPF and
+# control transitional cells are equivalent. What differs strongly between the
+# conditions is how many aberrant basaloid cells there are (Notebook 06).
 
 # %%
 tr = adata.obs[adata.obs["cell_type"] == "Transitional AT2"]
@@ -243,8 +259,9 @@ top_drivers = drivers.index[:30].tolist()
 print(", ".join(top_drivers))
 
 # %%
-# expression trends along the AT2 -> transitional -> aberrant basaloid path (cells ordered by
-# fate-weighted DPT, binned)
+# expression trends along the path into the aberrant basaloid state: cells whose aberrant basaloid
+# fate is at least their AT1 fate (almost only transitional AT2 cells; AT2 cells favour AT1) and the
+# aberrant basaloid cells, ordered by DPT and binned; the bar on top shows the cell types per bin
 path = adata[adata.obs["cell_type"].isin(["AT2", "Transitional AT2", "Aberrant basaloid"])
              & (adata.obs["fate_Aberrant basaloid"] >= adata.obs["fate_AT1"])].copy()
 order = path.obs["dpt_pseudotime"].rank(method="first")
@@ -268,8 +285,8 @@ axh = fig.add_subplot(gs[1, 0])
 peak = trend.idxmax().sort_values().index
 im = axh.imshow(trend[peak].T, aspect="auto", cmap="RdBu_r", vmin=-2.5, vmax=2.5, interpolation="nearest")
 axh.set_yticks(range(len(peak)), peak, fontsize=5)
-axh.set_xticks([0, len(trend) - 1], ["AT2", "aberrant basaloid"])
-axh.set_xlabel("pseudotime bins (DPT)")
+axh.set_xticks([0, len(trend) - 1], ["earlier", "later"])
+axh.set_xlabel("diffusion pseudotime (40 bins of equal cell number)")
 cax = fig.add_subplot(gs[1, 1])
 fig.colorbar(im, cax=cax, label="z-score")
 save_figure(fig, "Fig4_driver_gene_trends", FIG)

@@ -27,6 +27,15 @@ CONDITION_COLORS = {
     "COPD": "#72B7B2",
 }
 
+# alveolar epithelial lineage (Fig. 4 and the replication figures): distinct, colour-blind safe
+# Okabe-Ito colours, because the atlas palette gives all epithelial types similar oranges
+LINEAGE_COLORS = {
+    "AT2": "#0072B2",
+    "Transitional AT2": "#CC79A7",
+    "AT1": "#009E73",
+    "Aberrant basaloid": "#D55E00",
+    "Basal": "#E69F00",
+}
 COMPARTMENT_COLORS = {
     "Epithelial": "#E15759",
     "Immune": "#4E79A7",
