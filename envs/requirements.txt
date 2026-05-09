@@ -6,7 +6,7 @@ scikit-misc>=0.3        # loess for flavor="seurat_v3" highly variable genes
 scikit-image>=0.24      # automatic threshold for Scrublet doublet scores
 scvi-tools>=1.2
 scib-metrics>=0.5
-harmonypy>=0.0.10
+harmonypy>=0.0.10,<0.3   # >=2.0 is a C++ build that does not compile with MSVC
 celltypist>=1.6
 decoupler>=1.6
 liana>=1.4
