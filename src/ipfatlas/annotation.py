@@ -113,6 +113,33 @@ def majority_label(adata: AnnData, groupby: str, label_key: str) -> pd.DataFrame
                          "n_cells": ct.sum(axis=1)})
 
 
+# Fine discovery labels -> coarser labels shared with the Adams et al. annotation
+# (io.ADAMS_TO_PROJECT), used for every cross-cohort comparison.
+FINE_TO_HARMONISED = {
+    "AT1": "AT1", "AT2": "AT2", "Transitional AT2": "AT2", "Aberrant basaloid": "Aberrant basaloid",
+    "Basal": "Basal", "Secretory (club/goblet)": "Secretory (club/goblet)",
+    "SCGB3A2+ secretory": "Secretory (club/goblet)", "Ciliated": "Ciliated", "PNEC": "PNEC", "Ionocyte": "Ionocyte",
+    "Mesothelial": "Mesothelial",
+    "Alveolar fibroblasts": "Fibroblasts", "Adventitial fibroblasts": "Fibroblasts", "HAS1hi fibroblasts": "Fibroblasts",
+    "PLIN2+ fibroblasts": "Fibroblasts", "Myofibroblasts": "Myofibroblasts", "Smooth muscle": "Smooth muscle",
+    "Pericytes": "Pericytes",
+    "Aerocyte capillary EC": "Capillary EC", "General capillary EC": "Capillary EC", "Arterial EC": "Arterial EC",
+    "Venous EC": "Venous EC", "Systemic venous EC (COL15A1+)": "Venous EC", "Lymphatic EC": "Lymphatic EC",
+    "Alveolar macrophages": "Alveolar macrophages", "SPP1hi macrophages": "Monocyte-derived macrophages",
+    "Interstitial macrophages": "Monocyte-derived macrophages",
+    "Proliferating macrophages": "Monocyte-derived macrophages",
+    "Classical monocytes": "Classical monocytes", "Non-classical monocytes": "Non-classical monocytes",
+    "cDC": "cDC", "pDC": "pDC", "Mast cells": "Mast cells", "CD4 T cells": "CD4 T cells", "Treg": "CD4 T cells",
+    "CD8 T cells": "CD8 T cells", "NK cells": "NK cells", "B cells": "B cells", "Plasma cells": "Plasma cells",
+    "Monocyte-derived macrophages": "Monocyte-derived macrophages",
+}
+
+
+def harmonise(labels: pd.Series) -> pd.Series:
+    """Map fine labels to the cross-cohort level; unknown labels become 'Other'."""
+    return labels.astype(str).map(FINE_TO_HARMONISED).fillna("Other").astype("category")
+
+
 # HLCA (CellTypist Human_Lung_Atlas) labels -> labels of this atlas. Used only when the
 # marker call of a cluster is ambiguous. Labels without an unambiguous counterpart
 # (e.g. AT0, peribronchial fibroblasts) are deliberately left out.
