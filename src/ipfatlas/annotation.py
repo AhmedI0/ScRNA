@@ -66,6 +66,41 @@ def overclustering_resolution(n_cells: int) -> int:
     return 30
 
 
+def train_celltypist(adata: AnnData, labels: str, **kwargs):
+    """``celltypist.train`` with one-vs-rest logistic regression on scikit-learn >= 1.8.
+
+    CellTypist (1.7.1) builds ``LogisticRegression(multi_class="ovr")``, an argument
+    scikit-learn 1.8 removed (multiclass fits are now always multinomial). The same
+    model, one binary logistic regression per cell type, is fitted with
+    ``OneVsRestClassifier`` and its coefficients are copied into a single
+    ``LogisticRegression``, the object CellTypist stores and predicts with
+    (``decision_function``, then a sigmoid per class).
+    """
+    import importlib
+
+    import celltypist
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.multiclass import OneVsRestClassifier
+
+    def ovr(indata, labels, C, solver, max_iter, n_jobs, **kw):
+        solver = solver or ("sag" if len(labels) > 50000 else "lbfgs")  # CellTypist's default
+        fit = OneVsRestClassifier(LogisticRegression(C=C, solver=solver, max_iter=max_iter, **kw),
+                                  n_jobs=n_jobs).fit(indata, labels)
+        lr = LogisticRegression(C=C, solver=solver, max_iter=max_iter, **kw)
+        lr.classes_ = fit.classes_
+        lr.coef_ = np.vstack([e.coef_ for e in fit.estimators_])
+        lr.intercept_ = np.concatenate([e.intercept_ for e in fit.estimators_])
+        lr.n_features_in_ = indata.shape[1]
+        return lr
+
+    module = importlib.import_module("celltypist.train")  # celltypist.train is also the function
+    original, module._LRClassifier = module._LRClassifier, ovr
+    try:
+        return celltypist.train(adata, labels=labels, **kwargs)
+    finally:
+        module._LRClassifier = original
+
+
 def score_marker_sets(adata: AnnData, sets: dict[str, list], prefix: str = "score_", seed: int = 0) -> list[str]:
     """Scanpy ``score_genes`` (Tirosh-style, control-gene corrected) for every marker set."""
     cols = []

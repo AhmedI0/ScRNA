@@ -30,7 +30,6 @@
 
 # %%
 import anndata as ad
-import celltypist
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -92,8 +91,8 @@ sc.pp.normalize_total(tr, target_sum=1e4)
 sc.pp.log1p(tr)
 model_path = P.processed / "models" / "celltypist_discovery.pkl"
 with timer("CellTypist training"):
-    model = celltypist.train(tr, labels="cell_type", n_jobs=8, feature_selection=True, top_genes=300,
-                             check_expression=False, max_iter=500)
+    model = annotation.train_celltypist(tr, labels="cell_type", n_jobs=8, feature_selection=True, top_genes=300,
+                                        check_expression=False, max_iter=500)
 model.write(str(model_path))
 del tr
 
