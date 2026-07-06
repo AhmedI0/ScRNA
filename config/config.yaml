@@ -17,7 +17,7 @@ paths:
 
 # R used for scDblFinder, edgeR/DESeq2 and speckle (propeller)
 r:
-  rscript_windows: K:/R_setup/R/R-4.5.1/bin/x64/Rscript.exe
+  rscript_windows: K:/R_setup/R/R-4.6.1/bin/x64/Rscript.exe
   rscript_linux: Rscript
 
 figures:
