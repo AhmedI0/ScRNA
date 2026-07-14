@@ -1,0 +1,23 @@
+# pySCENIC 0.12.1 (Van de Sande et al. 2020, Nat Protoc).
+# pySCENIC is sensitive to numpy/pandas/dask versions; these pins reproduce the
+# official aertslab/pyscenic:0.12.1 container. GRN inference uses the
+# multiprocessing implementation shipped with pySCENIC (no dask cluster needed).
+name: ipf-scenic
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  - pip
+  - numpy=1.23.5
+  - pandas=1.5.3
+  - scipy<1.12
+  - numba
+  - pyarrow
+  - pip:
+      - loompy==3.0.7          # PyPI only: conda-forge has 3.0.6 and 3.0.8
+      - pyscenic==0.12.1
+      - ctxcore==0.2.0
+      - arboreto==0.1.6
+      - dask==2023.1.1
+      - distributed==2023.1.1
