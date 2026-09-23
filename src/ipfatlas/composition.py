@@ -59,6 +59,7 @@ def run_sccoda(counts: pd.DataFrame, meta: pd.DataFrame, condition_key: str, cas
                num_samples: int = 20000, num_warmup: int = 5000) -> pd.DataFrame:
     """scCODA via pertpy (NUTS sampler). Returns per-cell-type effect table."""
     import anndata as ad
+    import numpyro
     import pertpy as pt
 
     sample = ad.AnnData(X=counts.values.astype(float), obs=meta.copy(),
@@ -67,9 +68,14 @@ def run_sccoda(counts: pd.DataFrame, meta: pd.DataFrame, condition_key: str, cas
     model = pt.tl.Sccoda()
     mdata = model.load(sample, type="sample_level", generate_sample_level=False)
     mdata = model.prepare(mdata, modality_key="coda", formula=condition_key, reference_cell_type=reference)
-    model.run_nuts(mdata, modality_key="coda", rng_key=seed, num_samples=num_samples, num_warmup=num_warmup)
-    model.set_fdr(mdata, modality_key="coda", est_fdr=fdr)
-    eff = model.get_effect_df(mdata, modality_key="coda").reset_index()
+    # scCODA replaces zero counts by 0.5, so per-sample totals are not integers. numpyro >= 0.22
+    # validates distribution arguments by default and rejects that; the Dirichlet-multinomial
+    # likelihood (gamma functions) is defined for real-valued totals, as in the original scCODA.
+    # (set_fdr re-runs the model for the posterior summary, so it needs the same setting)
+    with numpyro.validation_enabled(False):
+        model.run_nuts(mdata, modality_key="coda", rng_key=seed, num_samples=num_samples, num_warmup=num_warmup)
+        model.set_fdr(mdata, modality_key="coda", est_fdr=fdr)
+        eff = model.get_effect_df(mdata, modality_key="coda").reset_index()
     eff = eff.rename(columns={"Cell Type": "celltype"})
     ref = mdata["coda"].uns["scCODA_params"]["reference_cell_type"]
     eff["reference_cell_type"] = ref
