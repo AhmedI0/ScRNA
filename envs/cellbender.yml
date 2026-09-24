@@ -1,0 +1,25 @@
+# CellBender 0.3.2 on the analysis PC's GPU (workflow/scripts/run_cellbender.py), used
+# when the Linux workstation has no NVIDIA GPU.
+#
+# A separate environment: CellBender pins notebook < 7 and nbconvert < 7, which would
+# downgrade the Jupyter stack of the analysis environment.
+# h5py comes from conda-forge, built against the same HDF5 as PyTables; the pip wheel
+# bundles its own HDF5 and fails to load next to it on Windows ("DLL load failed").
+#
+#   conda env create -p J:\Programsv1\Anaconda_envs\cellbender -f envs/cellbender.yml
+name: cellbender
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - numpy=1.23.5
+  - scipy<1.12
+  - pandas<2.1
+  - pytables
+  - h5py
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cu124
+      - torch==2.4.1+cu124
+      - pyro-ppl==1.8.6        # the pyro release line CellBender 0.3.2 was developed with
+      - cellbender==0.3.2

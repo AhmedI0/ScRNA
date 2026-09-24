@@ -20,6 +20,17 @@ r:
   rscript_windows: K:/R_setup/R/R-4.6.1/bin/x64/Rscript.exe
   rscript_linux: Rscript
 
+# CellBender when the Linux workstation has no NVIDIA GPU (workflow/scripts/run_cellbender.py).
+# Its own environment: CellBender pins Jupyter < 7, which would downgrade the analysis env.
+# Parameters are those of linux_upstream/scripts/07_cellbender.sh.
+cellbender:
+  env_windows: J:/Programsv1/Anaconda_envs/cellbender
+  env_linux: ""            # empty: the Python that runs the script (must have CellBender)
+  fpr: 0.01                # tolerated false-positive rate of removed signal
+  epochs: 150
+  droplets_per_cell: 3     # --total-droplets-included = max(3 x expected cells, min_droplets)
+  min_droplets: 25000
+
 figures:
   dpi: 300
   formats: [svg, jpg, png]
