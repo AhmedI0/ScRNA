@@ -56,8 +56,14 @@ def run_propeller(adata: AnnData, rscript: str, r_script: Path, workdir: Path, c
 
 def run_sccoda(counts: pd.DataFrame, meta: pd.DataFrame, condition_key: str, case: str, control: str,
                reference: str | None = "automatic", fdr: float = 0.1, seed: int = 0,
-               num_samples: int = 20000, num_warmup: int = 5000) -> pd.DataFrame:
-    """scCODA via pertpy (NUTS sampler). Returns per-cell-type effect table."""
+               num_samples: int = 20000, num_warmup: int = 5000, max_tries: int = 3,
+               accept_range: tuple[float, float] = (0.6, 0.95)) -> pd.DataFrame:
+    """scCODA via pertpy (NUTS sampler). Returns per-cell-type effect table.
+
+    A chain whose mean acceptance rate is outside ``accept_range`` (pertpy's own
+    warning bounds) has not explored the posterior; it is restarted with the next
+    seed, up to ``max_tries`` times, and a RuntimeError is raised if none converges.
+    """
     import anndata as ad
     import numpyro
     import pertpy as pt
@@ -66,20 +72,33 @@ def run_sccoda(counts: pd.DataFrame, meta: pd.DataFrame, condition_key: str, cas
                         var=pd.DataFrame(index=counts.columns.astype(str)))
     sample.obs[condition_key] = pd.Categorical(sample.obs[condition_key], categories=[control, case])
     model = pt.tl.Sccoda()
-    mdata = model.load(sample, type="sample_level", generate_sample_level=False)
-    mdata = model.prepare(mdata, modality_key="coda", formula=condition_key, reference_cell_type=reference)
-    # scCODA replaces zero counts by 0.5, so per-sample totals are not integers. numpyro >= 0.22
-    # validates distribution arguments by default and rejects that; the Dirichlet-multinomial
-    # likelihood (gamma functions) is defined for real-valued totals, as in the original scCODA.
-    # (set_fdr re-runs the model for the posterior summary, so it needs the same setting)
-    with numpyro.validation_enabled(False):
-        model.run_nuts(mdata, modality_key="coda", rng_key=seed, num_samples=num_samples, num_warmup=num_warmup)
-        model.set_fdr(mdata, modality_key="coda", est_fdr=fdr)
-        eff = model.get_effect_df(mdata, modality_key="coda").reset_index()
+    rates = []
+    for key in range(seed, seed + max_tries):
+        mdata = model.load(sample.copy(), type="sample_level", generate_sample_level=False)
+        mdata = model.prepare(mdata, modality_key="coda", formula=condition_key, reference_cell_type=reference)
+        # scCODA replaces zero counts by 0.5, so per-sample totals are not integers. numpyro >= 0.22
+        # validates distribution arguments by default and rejects that; the Dirichlet-multinomial
+        # likelihood (gamma functions) is defined for real-valued totals, as in the original scCODA.
+        # (set_fdr re-runs the model for the posterior summary, so it needs the same setting)
+        with numpyro.validation_enabled(False):
+            model.run_nuts(mdata, modality_key="coda", rng_key=key, num_samples=num_samples, num_warmup=num_warmup)
+            rate = float(mdata["coda"].uns["scCODA_params"]["mcmc"]["acceptance_rate"])
+            rates.append(rate)
+            if not accept_range[0] <= rate <= accept_range[1]:
+                log.warning(f"scCODA chain with rng_key={key} did not converge (acceptance rate {rate:.2f})")
+                continue
+            model.set_fdr(mdata, modality_key="coda", est_fdr=fdr)
+            eff = model.get_effect_df(mdata, modality_key="coda").reset_index()
+        break
+    else:
+        raise RuntimeError(f"no converged chain in {max_tries} tries (acceptance rates {[round(r, 2) for r in rates]})")
     eff = eff.rename(columns={"Cell Type": "celltype"})
     ref = mdata["coda"].uns["scCODA_params"]["reference_cell_type"]
     eff["reference_cell_type"] = ref
-    log.info(f"scCODA reference cell type: {ref}; credible effects: {(eff['Final Parameter'] != 0).sum()}")
+    eff["acceptance_rate"] = rate
+    eff["rng_key"] = key
+    log.info(f"scCODA reference cell type: {ref}; acceptance rate {rate:.2f} (rng_key={key}); "
+             f"credible effects: {(eff['Final Parameter'] != 0).sum()}")
     return eff
 
 

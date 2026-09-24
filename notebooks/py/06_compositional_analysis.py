@@ -133,7 +133,10 @@ within[["log2_prop_ratio", "P.Value", "FDR"]].sort_values("FDR").round(4)
 # The reference cell type is chosen automatically as the type with the least
 # variable relative abundance across donors (present in ≥95 % of donors). An
 # effect is "credible" if its spike-and-slab inclusion probability exceeds the
-# threshold controlling the expected false-discovery rate at 10 %.
+# threshold controlling the expected false-discovery rate at 10 %. A chain whose
+# mean acceptance rate falls outside 0.6–0.95 has not explored the posterior
+# (pertpy warns at these bounds); it is restarted with the next seed (up to three
+# tries), and a compartment without a converged chain is reported as such.
 
 # %%
 sccoda = []
