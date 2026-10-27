@@ -1,0 +1,26 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install lightweight dependencies
+        # the unit tests only need the core scientific stack, not scVI/torch
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "numpy<2.3" "pandas<3" scipy anndata "scanpy>=1.10" matplotlib seaborn pillow pyyaml openpyxl scikit-learn pytest ruff
+          python -m pip install -e . --no-deps
+      - name: Lint
+        run: ruff check src tests workflow notebooks/py
+      - name: Unit tests
+        run: pytest -q
