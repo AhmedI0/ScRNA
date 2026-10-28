@@ -13,10 +13,17 @@ fetch() {  # fetch <url> <dest> <md5>
     if [[ -s "$dest" ]] && [[ "$(md5sum "$dest" | cut -d' ' -f1)" == "$md5" ]]; then
         echo "[skip] $(basename "$dest")"; return 0
     fi
-    for attempt in 1 2 3 4 5; do
+    # ENA often closes long transfers early (curl exit 18), so a large file can take
+    # many resumed attempts; give up only after 5 attempts in a row add no bytes.
+    local stalled=0 before after
+    while (( stalled < 5 )); do
+        before=$(stat -c %s "$dest" 2>/dev/null || echo 0)
         if curl -fsSL --retry 5 --retry-delay 20 -C - -o "$dest" "$url"; then
             if [[ "$(md5sum "$dest" | cut -d' ' -f1)" == "$md5" ]]; then echo "[ok]   $(basename "$dest")"; return 0; fi
-            echo "[md5 mismatch] $(basename "$dest") attempt $attempt"; rm -f "$dest"
+            echo "[md5 mismatch] $(basename "$dest")"; rm -f "$dest"; stalled=$(( stalled + 1 ))
+        else
+            after=$(stat -c %s "$dest" 2>/dev/null || echo 0)
+            if (( after > before )); then stalled=0; else stalled=$(( stalled + 1 )); fi
         fi
         sleep 30
     done
