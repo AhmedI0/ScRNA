@@ -9,6 +9,7 @@ channels:
 dependencies:
   - python=3.10
   - pip
+  - setuptools<81      # ctxcore 0.2.0 imports pkg_resources, which newer setuptools drops
   - numpy=1.23.5
   - pandas=1.5.3
   - scipy<1.12
