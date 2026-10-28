@@ -27,6 +27,9 @@ ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "notebooks" / "py"
 OUT = ROOT / "notebooks"
 LOGS = ROOT / "logs" / "notebooks"
+# notebooks that analyse results returned from the Linux upstream package
+NEEDS_LINUX = {"14", "15"}
+LINUX_RESULTS = ROOT / "data" / "linux_results" / "results_to_return"
 
 
 def activate_env() -> None:
@@ -90,6 +93,11 @@ def main() -> None:
         nbs = [nb for nb in nbs if nb.name[:2] in args.select]
     if args.start:
         nbs = [nb for nb in nbs if nb.name[:2] >= args.start]
+    if not LINUX_RESULTS.exists():
+        skipped = [nb.stem for nb in nbs if nb.name[:2] in NEEDS_LINUX]
+        nbs = [nb for nb in nbs if nb.name[:2] not in NEEDS_LINUX]
+        for name in skipped:
+            print(f"{name:45s} SKIPPED (no Linux results in {LINUX_RESULTS.relative_to(ROOT)})", flush=True)
     total = sum(run(nb, args.kernel) for nb in nbs)
     print(f"all done in {total / 60:.1f} min")
 
