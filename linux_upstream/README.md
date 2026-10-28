@@ -108,11 +108,11 @@ so a crashed run is resumed by starting it again.
 | 01 | `01_install_envs.sh` | creates `ipf-upstream`, `ipf-scenic` and (unless `SKIP_CELLBENDER=1`) `ipf-cellbender` conda envs, by path in `ENVS_DIR` if set | 10–20 min |
 | 02 | `02_get_reference.sh` | 10x GRCh38-3.0.0 reference (same as the original study) + 737K barcode whitelist, size/MD5 verified | 15 min |
 | 03 | `03_build_star_index.sh` | STAR genome index (`--sjdbOverhang 100`) | ~1 h |
-| 04 | `04_download_fastq.sh` | FASTQ from ENA over HTTPS, MD5-verified, resumable, 4 in parallel | 1–3 h |
+| 04 | `04_download_fastq.sh` | FASTQ from ENA over HTTPS, MD5-verified, resumable, 4 in parallel | 1–5 h (ENA speed varies; the 20 GB files of ILD63 took 4 h) |
 | 05 | `05_read_qc.sh` | detects which FASTQ holds the barcode (whitelist hit rate), FastQC on subsamples | 15 min |
-| 06 | `06_starsolo.sh` | STARsolo: Gene, GeneFull and Velocyto counts, EmptyDrops cell calling | 20–60 min / library |
+| 06 | `06_starsolo.sh` | STARsolo: Gene, GeneFull and Velocyto counts, EmptyDrops cell calling | 5–30 min / library (~800 M reads/h) |
 | 07 | `07_cellbender.sh` | CellBender remove-background on the raw droplet matrix (skipped with `USE_GPU=no`) | 20–40 min / library (GPU) |
-| 08 | `08_pyscenic.sh` | GRNBoost2 → cisTarget → AUCell, ×3 seeds, consensus regulons | 3–8 h |
+| 08 | `08_pyscenic.sh` | GRNBoost2 → cisTarget → AUCell, ×3 seeds, consensus regulons | ~1 h |
 | 09 | `09_export_h5ad.sh` | one `.h5ad` per library with spliced/unspliced layers | minutes |
 | 10 | `10_collect_results.sh` | MultiQC report, checksums, single `.tar` archive to return | minutes |
 
@@ -130,6 +130,12 @@ so a crashed run is resumed by starting it again.
   (Notebook 14 reports the unspliced fraction per cell type before interpreting anything).
 * **pySCENIC ×3**: GRNBoost2 is stochastic; only regulons recovered in ≥ 2 of 3
   runs are kept (`python/aggregate_regulons.py`), following Van de Sande *et al.* 2020.
+* **GRNBoost2 driver** (`python/grnboost2_fork.py`): pySCENIC's
+  `arboreto_with_multiprocessing.py` sends the whole expression matrix to the worker
+  pool with every target gene, so on 6,000 cells × 13,000 genes the parent process is
+  busy pickling and the workers idle (about one gene per second). The driver runs the
+  same arboreto regressions with the same seeds on a matrix shared by the forked
+  workers: identical adjacencies, about 30 times faster.
 
 ## 5. pySCENIC input
 
@@ -184,7 +190,7 @@ linux_upstream/
 │   ├── upstream.yml  cellbender.yml  scenic.yml
 ├── scripts/                   # one script per step (00-10) + common.sh helpers
 ├── python/                    # helper programs used by the steps
-│   ├── detect_read_layout.py  starsolo_to_h5ad.py  aggregate_regulons.py
+│   ├── detect_read_layout.py  starsolo_to_h5ad.py  grnboost2_fork.py  aggregate_regulons.py
 └── input/                     # place scenic_input.loom here
 ```
 
@@ -195,6 +201,8 @@ linux_upstream/
 | `EXITING because of FATAL ERROR: not enough memory for BAM sorting` | not used here (`--outSAMtype None`); if you enable BAM, add `--limitBAMsortRAM 30000000000` |
 | STAR killed during index build | RAM too small → `MEM_GB=30 bash scripts/03_build_star_index.sh` builds a sparse index |
 | `md5 mismatch` repeatedly | ENA mirror hiccup; rerun step 04 (it resumes) |
+| `curl: (18) transfer closed with … bytes remaining` | ENA closes long transfers; step 04 resumes the file as long as it keeps growing |
 | very low "Reads Mapped to Gene" in `Summary.csv` | wrong strand — check `SOLO_STRAND` (Reverse for 5′, Forward for 3′) |
 | CellBender `CUDA out of memory` | add `--projected-ambient-count-threshold 1` or lower `--total-droplets-included` in step 07 |
 | pySCENIC `AttributeError: module 'numpy' has no attribute 'object'` | env built with numpy ≥ 1.24 → recreate `ipf-scenic` from `envs/scenic.yml` |
+| pySCENIC `ModuleNotFoundError: No module named 'pkg_resources'` | setuptools ≥ 81 in `ipf-scenic` (ctxcore imports `pkg_resources`) → `mamba install -p <env> "setuptools<81"`; `envs/scenic.yml` pins it |

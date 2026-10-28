@@ -33,8 +33,10 @@ for run in $(seq 1 "$SCENIC_RUNS"); do
     seed=$(( SCENIC_SEED + run ))
     if [[ ! -s "$rd/adjacencies.tsv" ]]; then
         info "[run $run/$SCENIC_RUNS] GRNBoost2 (seed $seed)"
-        in_env "$ENV_SCENIC" arboreto_with_multiprocessing.py "$loom" "$db/$(basename "$SCENIC_TFS")" \
-            --method grnboost2 --output "$rd/adjacencies.tsv" --num_workers "$THREADS" --seed "$seed" \
+        # same regressions as pySCENIC's arboreto_with_multiprocessing.py, without
+        # re-sending the expression matrix to the pool for every gene (see the script)
+        in_env "$ENV_SCENIC" python "$PKG_DIR/python/grnboost2_fork.py" "$loom" "$db/$(basename "$SCENIC_TFS")" \
+            --output "$rd/adjacencies.tsv" --num_workers "$THREADS" --seed "$seed" \
             2>&1 | tee "$LOG_DIR/scenic_grn_run$run.log"
     fi
     if [[ ! -s "$rd/regulons.csv" ]]; then
