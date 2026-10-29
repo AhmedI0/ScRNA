@@ -1,0 +1,28 @@
+,marker_label,runner_up,top_score,margin,confident,celltypist_top_label,celltypist_purity,celltypist_n_cells,coexpr_max,detect_Epithelial,detect_Immune,detect_Endothelial,detect_Mesenchymal
+0,Epithelial,Endothelial,0.672,0.633,True,AT2,0.893,12425,0.008,0.672,0.028,0.039,0.008
+1,Epithelial,Endothelial,0.415,0.377,True,AT2,1.0,26,0.0,0.415,0.016,0.038,0.0
+10,Immune,Epithelial,0.822,0.801,True,Alveolar macrophages,0.512,7035,0.009,0.021,0.822,0.018,0.007
+11,Immune,Epithelial,0.776,0.739,True,Alveolar macrophages,0.857,15371,0.013,0.037,0.776,0.029,0.009
+12,Immune,Epithelial,0.717,0.629,True,Alveolar Mph proliferating,0.322,2266,0.017,0.087,0.717,0.033,0.01
+13,Immune,Mesenchymal,0.754,0.739,True,NK cells,0.778,3885,0.013,0.01,0.754,0.008,0.015
+14,Immune,Epithelial,0.557,0.547,True,CD4 T cells,0.522,11799,0.012,0.011,0.557,0.008,0.007
+15,Epithelial,Immune,0.685,0.669,True,Multiciliated (non-nasal),0.997,13755,0.011,0.685,0.016,0.01,0.007
+16,Epithelial,Immune,0.331,0.298,True,Multiciliated (non-nasal),0.81,632,0.013,0.331,0.034,0.007,0.007
+17,Immune,Endothelial,0.533,0.511,True,Mast cells,0.944,1435,0.005,0.014,0.533,0.022,0.005
+18,Epithelial,Mesenchymal,0.641,0.611,True,Suprabasal,0.429,2279,0.014,0.641,0.024,0.019,0.031
+19,Endothelial,Immune,0.836,0.776,True,EC arterial,0.956,2118,0.018,0.025,0.059,0.836,0.011
+2,Epithelial,Immune,0.598,0.574,True,pre-TB secretory,0.692,7247,0.01,0.598,0.024,0.012,0.013
+20,Mesenchymal,Immune,0.817,0.788,True,Adventitial fibroblasts,0.468,4152,0.014,0.021,0.029,0.017,0.817
+21,Endothelial,Epithelial,0.576,0.445,True,Lymphatic EC mature,0.901,1388,0.013,0.131,0.114,0.576,0.01
+22,Mesenchymal,Epithelial,0.421,0.089,False,Mesothelium,0.787,244,0.016,0.332,0.052,0.01,0.421
+23,Endothelial,Immune,0.662,0.585,True,EC aerocyte capillary,0.891,1983,0.018,0.028,0.077,0.662,0.014
+24,Immune,Epithelial,0.294,0.274,True,Plasma cells,0.798,1462,0.005,0.02,0.294,0.012,0.009
+25,Mesenchymal,Epithelial,0.459,0.384,True,Smooth muscle,0.603,2083,0.024,0.076,0.033,0.026,0.459
+26,Immune,Epithelial,0.533,0.518,True,B cells,0.936,1555,0.011,0.015,0.533,0.007,0.008
+3,Epithelial,Immune,0.782,0.754,True,AT1,0.445,2833,0.017,0.782,0.028,0.018,0.017
+4,Immune,Endothelial,0.806,0.794,True,Classical monocytes,0.571,9594,0.012,0.009,0.806,0.012,0.008
+5,Immune,Endothelial,0.691,0.675,True,Monocyte-derived Mph,0.516,4887,0.011,0.012,0.691,0.016,0.007
+6,Immune,Epithelial,0.483,0.454,True,Alveolar macrophages,0.48,1064,0.01,0.029,0.483,0.019,0.022
+7,Immune,Epithelial,0.758,0.736,True,Monocyte-derived Mph,0.731,8168,0.008,0.022,0.758,0.021,0.008
+8,Immune,Epithelial,0.804,0.778,True,DC2,0.598,7507,0.013,0.026,0.804,0.013,0.012
+9,Endothelial,Immune,0.764,0.712,True,EC general capillary,0.405,9244,0.015,0.042,0.052,0.764,0.019

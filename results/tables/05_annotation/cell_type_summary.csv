@@ -1,0 +1,37 @@
+compartment,cell_type,n_cells,n_donors,frac_IPF
+Endothelial,Aerocyte capillary EC,1855,25,0.318
+Endothelial,General capillary EC,3941,30,0.261
+Endothelial,Arterial EC,2290,30,0.403
+Endothelial,Venous EC,1916,30,0.36
+Endothelial,Systemic venous EC (COL15A1+),2830,30,0.493
+Endothelial,Lymphatic EC,1342,29,0.479
+Epithelial,AT1,1489,30,0.334
+Epithelial,AT2,11233,29,0.389
+Epithelial,Transitional AT2,485,26,0.606
+Epithelial,Aberrant basaloid,482,21,0.722
+Epithelial,Basal,1636,24,0.848
+Epithelial,Secretory (club/goblet),3940,29,0.728
+Epithelial,SCGB3A2+ secretory,5861,30,0.756
+Epithelial,Ciliated,13630,30,0.815
+Immune,Alveolar macrophages,21909,30,0.313
+Immune,SPP1hi macrophages,4141,30,0.551
+Immune,Interstitial macrophages,3830,30,0.395
+Immune,Classical monocytes,8507,30,0.38
+Immune,Non-classical monocytes,2203,30,0.359
+Immune,cDC,4807,30,0.523
+Immune,pDC,192,19,0.646
+Immune,Mast cells,1312,29,0.511
+Immune,CD4 T cells,5800,30,0.409
+Immune,CD8 T cells,6377,30,0.352
+Immune,Treg,814,26,0.528
+Immune,NK cells,3670,27,0.366
+Immune,B cells,1493,30,0.508
+Immune,Plasma cells,750,29,0.601
+Immune,Proliferating macrophages,631,26,0.528
+Immune,Monocyte-derived macrophages,7263,30,0.454
+Mesenchymal,Alveolar fibroblasts,764,28,0.41
+Mesenchymal,Adventitial fibroblasts,2197,28,0.716
+Mesenchymal,Myofibroblasts,688,30,0.516
+Mesenchymal,Smooth muscle,1132,29,0.544
+Mesenchymal,Pericytes,853,29,0.342
+Mesenchymal,Mesothelial,192,20,0.562
