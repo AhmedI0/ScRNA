@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="399.09818pt" height="298.930852pt" viewBox="0 0 399.09818 298.930852" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-29T05:02:18.840683</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 298.930852 
+L 399.09818 298.930852 
+L 399.09818 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 56.9025 210.929035 
+L 340.367617 210.929035 
+L 340.367617 22.763047 
+L 56.9025 22.763047 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="PathCollection_1">
+    <path d="M 110.052209 118.474276 
+C 110.484022 118.474276 110.898208 118.302715 111.203546 117.997377 
+C 111.508884 117.692039 111.680445 117.277854 111.680445 116.846041 
+C 111.680445 116.414228 111.508884 116.000042 111.203546 115.694704 
+C 110.898208 115.389367 110.484022 115.217805 110.052209 115.217805 
+C 109.620396 115.217805 109.206211 115.389367 108.900873 115.694704 
+C 108.595535 116.000042 108.423974 116.414228 108.423974 116.846041 
+C 108.423974 117.277854 108.595535 117.692039 108.900873 117.997377 
+C 109.206211 118.302715 109.620396 118.474276 110.052209 118.474276 
+z
+" clip-path="url(#p37f9e04019)" style="fill: #67000d; stroke: #000000; stroke-width: 0.2"/>
+    <path d="M 198.635058 118.474276 
+C 199.066871 118.474276 199.481057 118.302715 199.786395 117.997377 
+C 200.091733 117.692039 200.263294 117.277854 200.263294 116.846041 
+C 200.263294 116.414228 200.091733 116.000042 199.786395 115.694704 
+C 199.481057 115.389367 199.066871 115.217805 198.635058 115.217805 
+C 198.203245 115.217805 197.78906 115.389367 197.483722 115.694704 
+C 197.178384 116.000042 197.006823 116.414228 197.006823 116.846041 
+C 197.006823 117.277854 197.178384 117.692039 197.483722 117.997377 
+C 197.78906 118.302715 198.203245 118.474276 198.635058 118.474276 
+z
+" clip-path="url(#p37f9e04019)" style="fill: #f4503a; stroke: #000000; stroke-width: 0.2"/>
+    <path d="M 287.217907 118.350738 
+C 287.616958 118.350738 287.999718 118.192193 288.281889 117.910022 
+C 288.56406 117.627851 288.722604 117.245091 288.722604 116.846041 
+C 288.722604 116.446991 288.56406 116.064231 288.281889 115.782059 
+C 287.999718 115.499888 287.616958 115.341344 287.217907 115.341344 
+C 286.818857 115.341344 286.436097 115.499888 286.153926 115.782059 
+C 285.871755 116.064231 285.71321 116.446991 285.71321 116.846041 
+C 285.71321 117.245091 285.871755 117.627851 286.153926 117.910022 
+C 286.436097 118.192193 286.818857 118.350738 287.217907 118.350738 
+z
+" clip-path="url(#p37f9e04019)" style="fill: #fff5f0; stroke: #000000; stroke-width: 0.2"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="mbf69f3f27a" d="M 0 0 
+L 0 2.5 
+" style="stroke: #000000; stroke-width: 0.6"/>
+      </defs>
+      <g>
+       <use xlink:href="#mbf69f3f27a" x="110.052209" y="210.929035" style="stroke: #000000; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 5px; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif" transform="translate(77.368672 273.780282) rotate(-60)">AT1 → Adventitial fibroblasts</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#mbf69f3f27a" x="198.635058" y="210.929035" style="stroke: #000000; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 5px; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif" transform="translate(152.565974 296.964729) rotate(-60)">Transitional AT2 → Adventitial fibroblasts</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use xlink:href="#mbf69f3f27a" x="287.217907" y="210.929035" style="stroke: #000000; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 5px; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif" transform="translate(248.653035 283.966905) rotate(-60)">Pericytes → Adventitial fibroblasts</text>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_4">
+      <defs>
+       <path id="mb82e035314" d="M 0 0 
+L -2.5 0 
+" style="stroke: #000000; stroke-width: 0.6"/>
+      </defs>
+      <g>
+       <use xlink:href="#mb82e035314" x="56.9025" y="116.846041" style="stroke: #000000; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 5px; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: end" x="50.9025" y="118.666109" transform="rotate(-0 50.9025 118.666109)">SERPINF1 – PLXDC1</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_3">
+    <path d="M 56.9025 210.929035 
+L 56.9025 22.763047 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 56.9025 210.929035 
+L 340.367617 210.929035 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 8px; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif" transform="translate(83.245058 7.863828)">Ligand–receptor pairs up-regulated in IPF, received by fibroblasts</text>
+    <text style="font-size: 8px; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif" transform="translate(105.451308 16.763047)">(dot size ∝ −log10 max FDR of ligand and receptor)</text>
+   </g>
+  </g>
+  <g id="axes_2">
+   <g id="patch_5">
+    <path d="M 358.084186 163.887538 
+L 362.788336 163.887538 
+L 362.788336 69.804544 
+L 358.084186 69.804544 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <image xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAABQAAAGICAYAAABBWsCBAAAB2klEQVR4nO2ay3HDUAwDEQ77rzWXXAlPahAOlJcoACN4Hz9P8o//fq2gWo76qaJu+n9CZZ+wXxDZ3v0b1gsiG3iwBaNcUTddt0mogd3Gd7ABlMU72AJG9vrIus2BAMW40hMvsgcXeXiRfZHXUTbxYE/UsKJuutKjUJ5rsADK5lEeXmQP7mWah3fXm6hhRd1ELT2nDQcXeXiRzYs8vMheH3l4kU0b9J2mXFE3Qde5udIDdJs5yg/VtzkAxmjzKFfUTbc5YCg7bDi00uuj/FilsJpIeXgXH9OesK/BEij7xiiAso7yU5XC6qP8WM2byxV1061zGMrG/d9mcFcz8yLrDjahlr3+Ceca7PdTNq/BOvu2Ty+IrKtlAGUTa9mwQd/7/0hm4ick0zZYp8eo90d23NBRw4q66SIn1AOkPLTIlbXTdZuAmlh6vsgPVQqrb1l6rL5aBrSv2n8b9Qsii7bODXCMarlhvaCWpe0HW8K1L+Eoe3s/rPWU6wUN1qJFnqMMoGzx9kNlVWE/ESnby7evCvvpDefQt859P+XhUZ64ofdHNi2y04azPvLwKE/c0DTKtX9pn6yfXhHZUcOKuolaerhvoxM3tGiRfZS/n3Ltv5oNcYxmVWE/ASl/AJCB/ZBV4gRRAAAAAElFTkSuQmCC" id="image17bd4c6fe6" transform="scale(1 -1) translate(0 -94.08)" x="358.08" y="-69.6" width="4.8" height="94.08"/>
+   <g id="matplotlib.axis_3"/>
+   <g id="matplotlib.axis_4">
+    <g id="ytick_2">
+     <g id="line2d_5">
+      <defs>
+       <path id="mfb7f4ad1dc" d="M 0 0 
+L 2.5 0 
+" style="stroke: #000000; stroke-width: 0.6"/>
+      </defs>
+      <g>
+       <use xlink:href="#mfb7f4ad1dc" x="362.788336" y="150.296266" style="stroke: #000000; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 6px; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: start" x="368.788336" y="152.480348" transform="rotate(-0 368.788336 152.480348)">5.4</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#mfb7f4ad1dc" x="362.788336" y="126.377076" style="stroke: #000000; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <text style="font-size: 6px; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: start" x="368.788336" y="128.561158" transform="rotate(-0 368.788336 128.561158)">5.6</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_7">
+      <g>
+       <use xlink:href="#mfb7f4ad1dc" x="362.788336" y="102.457886" style="stroke: #000000; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 6px; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: start" x="368.788336" y="104.641968" transform="rotate(-0 368.788336 104.641968)">5.8</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#mfb7f4ad1dc" x="362.788336" y="78.538696" style="stroke: #000000; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 6px; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: start" x="368.788336" y="80.722778" transform="rotate(-0 368.788336 80.722778)">6.0</text>
+     </g>
+    </g>
+    <g id="text_10">
+     <text style="font-size: 7px; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif" transform="translate(386.749186 139.606431) rotate(-90)">interaction stat</text>
+     <text style="font-size: 7px; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif" transform="translate(395.66024 157.086197) rotate(-90)">(mean ligand/receptor √F)</text>
+    </g>
+   </g>
+   <g id="LineCollection_1"/>
+   <g id="patch_6">
+    <path d="M 358.084186 163.887538 
+L 360.436261 163.887538 
+L 362.788336 163.887538 
+L 362.788336 69.804544 
+L 360.436261 69.804544 
+L 358.084186 69.804544 
+L 358.084186 163.887538 
+z
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p37f9e04019">
+   <rect x="56.9025" y="22.763047" width="283.465117" height="188.165988"/>
+  </clipPath>
+ </defs>
+</svg>
