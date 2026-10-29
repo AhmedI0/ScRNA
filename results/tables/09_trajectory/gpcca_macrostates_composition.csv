@@ -1,0 +1,8 @@
+row_0,AT1,AT2,Aberrant basaloid,Basal,Transitional AT2
+AT1_1,25,5,0,0,0
+AT1_2,30,0,0,0,0
+AT2_1,0,30,0,0,0
+AT2_2,0,30,0,0,0
+Aberrant basaloid,0,0,30,0,0
+Basal,0,0,0,30,0
+nan,1434,1735,452,1606,485
