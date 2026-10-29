@@ -1,0 +1,32 @@
+author_celltype,outlier_counts,outlier_genes,outlier_top20,outlier_mito,outlier_hard,qc_fail,n_cells
+Plasma Cells,6.1,0.7,64.1,1.5,0.0,7.9,604
+MUC5B+,1.6,0.8,30.3,1.5,0.0,3.1,2433
+SCGB3A2+ SCGB1A1+,2.1,0.7,29.6,1.1,0.0,3.2,1410
+AT2,0.1,0.1,10.5,3.0,0.0,3.1,9311
+SCGB3A2+,2.1,1.2,4.9,3.6,0.0,5.8,3220
+MUC5AC+ High,1.9,1.0,4.9,1.0,0.0,2.9,103
+Differentiating Ciliated,0.7,0.7,1.6,1.8,0.0,2.7,1362
+Transitional AT2,0.5,0.6,1.6,3.5,0.0,4.3,1160
+Mesothelial Cells,10.3,6.0,1.3,5.2,0.0,16.3,233
+cDCs,2.5,1.8,1.2,2.0,0.0,4.7,2132
+Proliferating Epithelial Cells,0.9,0.6,0.6,2.3,0.0,3.2,341
+Macrophages,2.8,2.2,0.5,2.9,0.0,6.3,38928
+Monocytes,1.5,0.4,0.4,1.6,0.0,3.1,6765
+B Cells,0.3,0.3,0.3,0.5,0.0,0.8,997
+Myofibroblasts,1.6,1.7,0.3,1.1,0.0,2.9,1712
+Basal,1.4,1.0,0.3,3.5,0.0,5.1,2058
+AT1,0.0,0.0,0.3,3.5,0.0,3.5,771
+T Cells,0.2,0.1,0.3,0.6,0.0,0.8,6703
+Smooth Muscle Cells,0.6,0.1,0.2,0.9,0.0,1.5,1394
+KRT5-/KRT17+,0.6,1.6,0.2,3.7,0.0,5.6,485
+Proliferating Macrophages,1.7,2.4,0.2,2.2,0.0,4.9,1563
+Endothelial Cells,1.3,1.2,0.1,0.7,0.0,2.4,9243
+Ciliated,0.3,0.9,0.1,5.2,0.0,6.2,14671
+NK Cells,0.6,0.8,0.0,0.3,0.0,1.1,2322
+Fibroblasts,3.5,3.5,0.0,0.5,0.0,4.2,427
+HAS1 High Fibroblasts,0.0,0.0,0.0,0.0,0.0,0.0,179
+Lymphatic Endothelial Cells,0.1,0.0,0.0,0.5,0.0,0.6,1203
+Mast Cells,0.6,0.1,0.0,1.6,0.0,2.3,701
+PLIN2+ Fibroblasts,0.2,0.2,0.0,0.2,0.0,0.4,1287
+Proliferating T Cells,2.2,2.2,0.0,1.6,0.0,4.7,490
+pDCs,2.7,0.5,0.0,0.5,0.0,3.2,188
