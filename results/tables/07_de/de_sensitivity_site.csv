@@ -1,0 +1,61 @@
+celltype,analysis,n_main_DEGs,logFC_pearson_all,sign_agreement_main_DEGs,replicated_P05
+AT1,~ site + sex + diagnosis,144,0.872,1.0,0.896
+AT2,~ site + sex + diagnosis,436,0.933,1.0,0.991
+Adventitial fibroblasts,~ site + sex + diagnosis,76,0.896,1.0,0.987
+Aerocyte capillary EC,~ site + sex + diagnosis,2,0.924,1.0,1.0
+Alveolar fibroblasts,~ site + sex + diagnosis,4,0.616,1.0,1.0
+Alveolar macrophages,~ site + sex + diagnosis,217,0.902,1.0,0.986
+Arterial EC,~ site + sex + diagnosis,98,0.872,1.0,0.98
+B cells,~ site + sex + diagnosis,0,0.835,,
+CD4 T cells,~ site + sex + diagnosis,0,0.84,,
+CD8 T cells,~ site + sex + diagnosis,0,0.841,,
+Ciliated,~ site + sex + diagnosis,4,0.862,1.0,1.0
+Classical monocytes,~ site + sex + diagnosis,158,0.873,1.0,0.956
+General capillary EC,~ site + sex + diagnosis,38,0.908,1.0,1.0
+Interstitial macrophages,~ site + sex + diagnosis,20,0.819,1.0,1.0
+Lymphatic EC,~ site + sex + diagnosis,1,0.878,1.0,1.0
+Mast cells,~ site + sex + diagnosis,0,0.811,,
+Monocyte-derived macrophages,~ site + sex + diagnosis,348,0.88,1.0,0.928
+NK cells,~ site + sex + diagnosis,3,0.923,1.0,1.0
+Non-classical monocytes,~ site + sex + diagnosis,5,0.843,1.0,1.0
+Pericytes,~ site + sex + diagnosis,45,0.927,1.0,1.0
+Plasma cells,~ site + sex + diagnosis,1,0.651,1.0,1.0
+Proliferating macrophages,~ site + sex + diagnosis,8,0.929,1.0,1.0
+SCGB3A2+ secretory,~ site + sex + diagnosis,288,0.893,1.0,0.941
+SPP1hi macrophages,~ site + sex + diagnosis,59,0.896,1.0,1.0
+Secretory (club/goblet),~ site + sex + diagnosis,717,0.947,1.0,0.975
+Smooth muscle,~ site + sex + diagnosis,5,0.8,1.0,1.0
+Systemic venous EC (COL15A1+),~ site + sex + diagnosis,87,0.872,1.0,0.943
+Transitional AT2,~ site + sex + diagnosis,207,0.949,1.0,1.0
+Treg,~ site + sex + diagnosis,1,0.754,1.0,1.0
+Venous EC,~ site + sex + diagnosis,113,0.897,1.0,1.0
+cDC,~ site + sex + diagnosis,76,0.854,1.0,0.987
+AT1,Vanderbilt only,138,0.854,1.0,0.862
+AT2,Vanderbilt only,429,0.931,1.0,0.988
+Adventitial fibroblasts,Vanderbilt only,67,0.914,1.0,0.985
+Aerocyte capillary EC,Vanderbilt only,2,0.925,1.0,1.0
+Alveolar macrophages,Vanderbilt only,210,0.915,1.0,0.995
+Arterial EC,Vanderbilt only,95,0.872,1.0,0.989
+B cells,Vanderbilt only,0,0.839,,
+CD4 T cells,Vanderbilt only,0,0.831,,
+CD8 T cells,Vanderbilt only,0,0.848,,
+Ciliated,Vanderbilt only,4,0.87,1.0,1.0
+Classical monocytes,Vanderbilt only,116,0.886,1.0,0.983
+General capillary EC,Vanderbilt only,38,0.906,1.0,1.0
+Interstitial macrophages,Vanderbilt only,20,0.835,1.0,1.0
+Lymphatic EC,Vanderbilt only,1,0.893,1.0,1.0
+Mast cells,Vanderbilt only,0,0.825,,
+Monocyte-derived macrophages,Vanderbilt only,341,0.89,1.0,0.927
+NK cells,Vanderbilt only,3,0.929,1.0,1.0
+Non-classical monocytes,Vanderbilt only,4,0.852,1.0,1.0
+Pericytes,Vanderbilt only,26,0.927,1.0,1.0
+Proliferating macrophages,Vanderbilt only,9,1.0,1.0,1.0
+SCGB3A2+ secretory,Vanderbilt only,279,0.892,1.0,0.918
+SPP1hi macrophages,Vanderbilt only,58,0.915,1.0,1.0
+Secretory (club/goblet),Vanderbilt only,717,0.95,1.0,0.976
+Smooth muscle,Vanderbilt only,5,0.828,1.0,1.0
+Systemic venous EC (COL15A1+),Vanderbilt only,77,0.89,1.0,0.961
+Transitional AT2,Vanderbilt only,207,0.948,1.0,1.0
+Treg,Vanderbilt only,0,0.501,,
+Venous EC,Vanderbilt only,91,0.896,1.0,1.0
+cDC,Vanderbilt only,63,0.863,1.0,1.0
