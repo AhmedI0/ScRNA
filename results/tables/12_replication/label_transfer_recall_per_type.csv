@@ -1,0 +1,28 @@
+harmonised_celltype,majority voting,per cell,n_cells
+AT1,0.962,0.94,652
+AT2,0.69,0.669,2967
+Aberrant basaloid,0.906,0.797,385
+Basal,0.58,0.497,1394
+Secretory (club/goblet),0.683,0.593,2822
+Ciliated,0.994,0.869,7822
+Mesothelial,0.996,0.846,246
+Fibroblasts,0.99,0.934,2244
+Myofibroblasts,0.256,0.354,2975
+Smooth muscle,0.963,0.954,592
+Pericytes,0.939,0.923,586
+Capillary EC,0.967,0.767,1304
+Arterial EC,0.923,0.801,594
+Venous EC,0.944,0.918,2548
+Lymphatic EC,0.998,0.999,1680
+Alveolar macrophages,0.872,0.826,47056
+Monocyte-derived macrophages,0.57,0.463,96242
+Classical monocytes,0.749,0.747,10706
+Non-classical monocytes,0.872,0.835,2902
+cDC,0.747,0.739,6319
+pDC,0.977,0.847,476
+Mast cells,0.994,0.996,697
+CD4 T cells,0.98,0.929,10549
+CD8 T cells,0.443,0.455,10235
+NK cells,0.866,0.873,6650
+B cells,0.99,0.987,5542
+Plasma cells,0.874,0.797,390

@@ -1,0 +1,36 @@
+celltype,key,n_case,n_control,median_cells_per_donor,status
+AT1,AT1,27,17,41,tested
+AT2,AT2,8,10,42,tested
+Aberrant basaloid,Aberrant_basaloid,9,0,27,skipped (too few donors)
+Basal,Basal,21,3,22,tested
+Secretory (club/goblet),Secretory_club_goblet,27,5,29,tested
+SCGB3A2+ secretory,SCGB3A2_secretory,17,2,30,skipped (too few donors)
+Ciliated,Ciliated,32,20,85,tested
+Alveolar macrophages,Alveolar_macrophages,32,27,879,tested
+SPP1hi macrophages,SPP1hi_macrophages,32,23,108,tested
+Interstitial macrophages,Interstitial_macrophages,32,27,182,tested
+Classical monocytes,Classical_monocytes,31,27,225,tested
+Non-classical monocytes,Non_classical_monocytes,30,26,60,tested
+cDC,cDC,31,25,105,tested
+pDC,pDC,15,2,22,skipped (too few donors)
+Mast cells,Mast_cells,17,3,23,tested
+CD4 T cells,CD4_T_cells,32,27,186,tested
+CD8 T cells,CD8_T_cells,30,16,61,tested
+Treg,Treg,21,7,20,tested
+NK cells,NK_cells,29,20,91,tested
+B cells,B_cells,32,28,203,tested
+Plasma cells,Plasma_cells,4,8,17,tested
+Proliferating macrophages,Proliferating_macrophages,32,11,80,tested
+Monocyte-derived macrophages,Monocyte_derived_macrophages,32,27,279,tested
+Aerocyte capillary EC,Aerocyte_capillary_EC,7,4,21,tested
+General capillary EC,General_capillary_EC,12,10,17,tested
+Arterial EC,Arterial_EC,14,11,14,tested
+Venous EC,Venous_EC,12,5,17,tested
+Systemic venous EC (COL15A1+),Systemic_venous_EC_COL15A1,26,4,34,tested
+Lymphatic EC,Lymphatic_EC,21,19,26,tested
+Alveolar fibroblasts,Alveolar_fibroblasts,19,8,24,tested
+Adventitial fibroblasts,Adventitial_fibroblasts,25,15,31,tested
+Myofibroblasts,Myofibroblasts,14,0,42,skipped (too few donors)
+Smooth muscle,Smooth_muscle,10,2,28,skipped (too few donors)
+Pericytes,Pericytes,11,0,27,skipped (too few donors)
+Mesothelial,Mesothelial,7,1,16,skipped (too few donors)

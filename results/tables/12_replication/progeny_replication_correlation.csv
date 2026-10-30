@@ -1,0 +1,28 @@
+,spearman_rho
+AT1,0.033
+AT2,-0.521
+Adventitial fibroblasts,-0.429
+Aerocyte capillary EC,0.042
+Alveolar fibroblasts,0.657
+Alveolar macrophages,-0.095
+Arterial EC,0.358
+B cells,0.029
+CD4 T cells,-0.086
+CD8 T cells,-0.042
+Ciliated,-0.376
+Classical monocytes,-0.24
+General capillary EC,-0.165
+Interstitial macrophages,-0.503
+Lymphatic EC,0.266
+Mast cells,-0.521
+Monocyte-derived macrophages,0.178
+NK cells,0.31
+Non-classical monocytes,-0.095
+Plasma cells,-0.108
+Proliferating macrophages,0.354
+SPP1hi macrophages,-0.613
+Secretory (club/goblet),-0.24
+Systemic venous EC (COL15A1+),0.292
+Treg,-0.516
+Venous EC,0.121
+cDC,0.011

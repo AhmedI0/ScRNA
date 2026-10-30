@@ -1,0 +1,15 @@
+pathway,spearman_rho_across_celltypes,n_celltypes_FDR05_discovery,sign_agreement_FDR05_discovery,mean_activity_discovery,mean_activity_validation
+Estrogen,0.815,9,0.889,1.606,0.113
+TGFb,0.538,17,0.941,2.318,0.876
+JAK-STAT,0.463,13,0.615,2.576,-0.181
+Trail,0.462,3,0.667,0.2,0.796
+PI3K,0.267,22,0.455,4.385,-0.536
+EGFR,0.252,24,0.708,6.019,0.666
+p53,0.201,13,0.231,-1.871,1.183
+Hypoxia,0.123,5,1.0,0.02,0.314
+TNFa,0.077,21,0.286,4.612,-3.698
+WNT,0.076,1,1.0,-0.373,0.249
+NFkB,0.058,23,0.217,5.434,-4.578
+MAPK,0.053,21,0.476,5.114,-0.224
+VEGF,-0.317,8,0.125,1.308,-1.382
+Androgen,-0.364,6,0.667,0.447,1.399

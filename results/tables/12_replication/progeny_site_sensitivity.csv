@@ -1,0 +1,5 @@
+,EGFR,MAPK,NFkB,TNFa,median_rho_with_validation
+"discovery, ~ sex + diagnosis",6.02,5.11,5.43,4.61,-0.09
+"discovery, ~ site + sex + diagnosis",6.11,5.4,5.45,4.4,-0.1
+"discovery, Vanderbilt only",6.15,5.41,4.99,3.82,-0.11
+"validation, ~ sex + diagnosis",0.67,-0.22,-4.58,-3.7,1.0

@@ -1,0 +1,3 @@
+,ARI,accuracy,balanced_accuracy
+majority voting,0.442,0.717,0.842
+per cell,0.342,0.652,0.791
