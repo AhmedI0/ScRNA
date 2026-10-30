@@ -1,0 +1,13 @@
+cell_type,gene,counts_before,counts_after,fraction_retained
+Aberrant basaloid,COL1A1,669.0,667,0.997
+Aberrant basaloid,KRT17,2698.0,2698,1.0
+Aberrant basaloid,LAMB3,361.0,361,1.0
+Aberrant basaloid,MMP7,1495.0,1495,1.0
+Aberrant basaloid,SFTPC,46.0,7,0.152
+Alveolar macrophages,MARCO,16643.0,16635,1.0
+Alveolar macrophages,SCGB1A1,1357.0,146,0.108
+Alveolar macrophages,SFTPC,2525.0,206,0.082
+Transitional AT2,CLDN4,157.0,157,1.0
+Transitional AT2,KRT8,244.0,244,1.0
+Transitional AT2,SFN,108.0,108,1.0
+Transitional AT2,SFTPC,4505.0,4438,0.985
